@@ -59,8 +59,8 @@
                     <span id="liveStatusDot" class="w-3 h-3 rounded-full bg-green-500 relative"></span>
                 </div>
                 <div class="flex flex-col text-left">
-                    <span id="liveStatusText" class="text-xs font-bold text-green-400 tracking-wide">เชื่อมต่อ Orico NAS แล้ว</span>
-                    <span id="livePingText" class="text-[9px] text-gray-400">Ping: 2ms • 192.168.1.107</span>
+                    <span id="liveStatusText" class="text-xs font-bold text-green-400 tracking-wide">ยังไม่ได้เชื่อมต่อ TS200</span>
+                    <span id="livePingText" class="text-[9px] text-gray-400">IP: 192.168.1.107 • กดตรวจการเชื่อมต่อ</span>
                 </div>
             </div>
             <button onclick="openSettings()" class="bg-gray-800/80 hover:bg-gray-700 px-4 py-2 rounded-md text-sm font-medium transition tv-focus flex items-center space-x-2">
@@ -95,12 +95,12 @@
             </div>
 
             <div id="sectionMovies">
-                <h3 class="text-xl font-bold mb-3 flex items-center"><i class="fa-solid fa-film mr-2 text-netflix"></i> ภาพยนตร์ผ่าน DLNA Scan Path</h3>
+                <h3 class="text-xl font-bold mb-3 flex items-center"><i class="fa-solid fa-film mr-2 text-netflix"></i> ภาพยนตร์ผ่าน DLNA <span id="movieCount" class="text-xs text-gray-500 ml-2"></span></h3>
                 <div id="moviesRow" class="flex space-x-4 overflow-x-auto hide-scrollbar pb-4"></div>
             </div>
 
             <div id="sectionSeries">
-                <h3 class="text-xl font-bold mb-3 flex items-center"><i class="fa-solid fa-tv mr-2 text-netflix"></i> ซีรีส์และวิดีโออื่นๆ</h3>
+                <h3 class="text-xl font-bold mb-3 flex items-center"><i class="fa-solid fa-tv mr-2 text-netflix"></i> ซีรีส์และวิดีโออื่นๆ <span id="seriesCount" class="text-xs text-gray-500 ml-2"></span></h3>
                 <div id="seriesRow" class="flex space-x-4 overflow-x-auto hide-scrollbar pb-4"></div>
             </div>
         </div>
@@ -118,87 +118,61 @@
         </video>
     </div>
 
+
     <div id="settingsModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-[#1a1a1a] border border-gray-800 w-full max-w-xl rounded-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto shadow-2xl">
+        <div class="bg-[#1a1a1a] border border-gray-800 w-full max-w-xl rounded-lg p-6 space-y-5 max-h-[90vh] overflow-y-auto shadow-2xl">
             <div class="flex justify-between items-center border-b border-gray-800 pb-3">
-                <h3 class="text-2xl font-bold flex items-center"><i class="fa-solid fa-share-nodes text-orange-500 mr-2"></i> ตั้งค่า DLNA & Orico NAS</h3>
+                <h3 class="text-2xl font-bold flex items-center"><i class="fa-solid fa-server text-orange-500 mr-2"></i> DLNA / Orico NAS</h3>
                 <button onclick="closeSettings()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
-            
-            <!-- DLNA Protocol Control Panel -->
-            <div class="space-y-4 bg-black/40 p-4 rounded-lg border border-gray-800">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h4 class="text-sm font-bold text-white">DLNA Protocol & Samba</h4>
-                        <p class="text-xs text-gray-400">เปิดใช้งาน DLNA เพื่อให้ทีวีและอุปกรณ์ในวงแลนค้นหาและสตรีมมิ่งได้ทันที</p>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="dlnaToggle" checked class="sr-only peer" onchange="toggleDlnaStatus()">
-                        <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-netflix"></div>
-                    </label>
-                </div>
 
-                <div class="pt-3 border-t border-gray-800 space-y-2">
-                    <div class="flex items-center justify-between bg-black/60 p-3 rounded-lg border border-gray-800">
-                        <div class="flex items-center space-x-3">
-                            <div id="settingsPingIcon" class="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center font-bold">
-                                <i class="fa-solid fa-wifi text-sm"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold text-white" id="settingsNasStateTitle">Orico NAS Online (Stable)</p>
-                                <p class="text-[10px] text-gray-400" id="settingsNasIpDetail">IP: 192.168.1.107 • Port: 8080 • Protocol: DLNA / SMB</p>
-                            </div>
-                        </div>
-                        <button onclick="testNasConnection()" class="bg-gray-800 hover:bg-gray-700 text-orange-400 px-3 py-1.5 rounded text-xs font-bold border border-gray-700 transition">
-                            <i class="fa-solid fa-rotate mr-1"></i> ตรวจสอบสถานะ
-                        </button>
-                    </div>
-                </div>
-
-                <div class="pt-2 border-t border-gray-800">
-                    <button onclick="openDlnaScanPath()" class="w-full flex items-center justify-between text-left py-2 px-3 bg-gray-800/60 hover:bg-gray-800 rounded transition text-sm text-gray-200">
-                        <span class="flex items-center"><i class="fa-solid fa-folder-tree text-orange-400 mr-2"></i> DLNA scan path settings</span>
-                        <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- DLNA Scan Path Details -->
-            <div id="dlnaScanPathPanel" class="space-y-3 bg-gray-900/80 p-4 rounded-lg border border-gray-800 hidden">
-                <h4 class="text-xs font-semibold text-netflix uppercase tracking-wide">โฟลเดอร์ที่กำหนดให้สแกน DLNA (Scan Path)</h4>
-                <div class="space-y-2 text-xs">
-                    <div class="flex items-center justify-between bg-black/60 p-2 rounded border border-gray-800">
-                        <span class="text-gray-300"><i class="fa-solid fa-folder text-yellow-500 mr-1.5"></i> /Public space/หนัง (Movies)</span>
-                        <span class="text-green-400 font-bold">Active (Recursive)</span>
-                    </div>
-                    <div class="flex items-center justify-between bg-black/60 p-2 rounded border border-gray-800">
-                        <span class="text-gray-300"><i class="fa-solid fa-folder text-yellow-500 mr-1.5"></i> /Public space/VDO สอน</span>
-                        <span class="text-green-400 font-bold">Active</span>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-300 mb-1 mt-2">เพิ่มเส้นทางโฟลเดอร์สแกน (Path)</label>
-                    <div class="flex space-x-2">
-                        <input type="text" id="newScanPath" value="/Public space/หนัง" class="flex-grow bg-black/60 border border-gray-700 rounded px-3 py-1.5 text-white text-xs">
-                        <button onclick="addScanPath()" class="bg-netflix hover:bg-orange-600 px-3 py-1.5 rounded text-xs font-bold text-white">เพิ่ม</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Function Description -->
-            <div class="space-y-2 bg-orange-600/10 p-4 rounded-lg border border-orange-500/30 text-xs text-gray-300">
-                <p class="font-bold text-orange-400">คำแนะนำการสแกนไฟล์:</p>
-                <p class="text-gray-400 leading-relaxed">ระบบรองรับการสแกนเจาะลึกทุกโฟลเดอร์ย่อย (Deep Recursive Scan) เพื่อดึงไฟล์วิดีโอทั้งหมดจาก Orico NAS ของคุณมาแสดงผลได้อย่างครบถ้วน</p>
+            <div class="bg-orange-600/10 border border-orange-500/30 rounded-lg p-4 text-xs text-gray-300 leading-relaxed">
+                <b class="text-orange-400">สำคัญ:</b> เว็บเบราว์เซอร์ไม่สามารถเปิดโฟลเดอร์ SMB เช่น
+                <code>\\NAS\หนัง</code> โดยตรงได้ หน้านี้จึงใช้ DLNA/UPnP ContentDirectory
+                ของ NAS เพื่อค้นหาไฟล์ VORTEX รุ่นนี้ใช้ TS200 DLNA Proxy เป็นตัวกลาง เพื่อหลีกเลี่ยง CORS และค้นหา ContentDirectory จริงของ TS200
             </div>
 
             <div class="space-y-3">
-                <button onclick="autoScanNasFolder()" class="w-full bg-orange-600 hover:bg-orange-500 py-3 rounded font-bold text-center transition text-white text-sm shadow flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-folder-tree"></i> <span>สแกนเจาะลึกโฟลเดอร์ "หนัง" และทุกโฟลเดอร์ย่อยทันที</span>
-                </button>
+                <label class="block text-xs font-bold text-gray-300">NAS IP / Host</label>
+                <input id="nasHostInput" class="w-full bg-black/60 border border-gray-700 rounded px-3 py-2 text-white text-sm" value="192.168.1.107">
+
+                <label class="block text-xs font-bold text-gray-300">Port</label>
+                <input id="nasPortInput" class="w-full bg-black/60 border border-gray-700 rounded px-3 py-2 text-white text-sm" value="80">
+
+                <label class="block text-xs font-bold text-gray-300">VORTEX DLNA Proxy URL</label>
+                <input id="proxyUrlInput" class="w-full bg-black/60 border border-gray-700 rounded px-3 py-2 text-white text-sm" value="http://127.0.0.1:8787">
+                <p class="text-[10px] text-gray-500">ต้องเปิด vortex-ts200-proxy.js ก่อนใช้งาน; ถ้า VORTEX เปิดจากเครื่องเดียวกันใช้ค่านี้ได้เลย</p>
+
+                <label class="block text-xs font-bold text-gray-300">TS200 DLNA Service Path</label>
+                <input id="nasServiceInput" class="w-full bg-black/60 border border-gray-700 rounded px-3 py-2 text-white text-sm" value="/ContentDirectory/control">
+                <p class="text-[10px] text-gray-500">เวอร์ชันนี้ไม่ต้องกรอก endpoint เอง — Proxy จะค้นหา ContentDirectory ของ TS200 ผ่าน SSDP อัตโนมัติ</p>
+
+                <label class="block text-xs font-bold text-gray-300">DLNA Object ID ที่จะเริ่มสแกน</label>
+                <input id="nasRootInput" class="w-full bg-black/60 border border-gray-700 rounded px-3 py-2 text-white text-sm" value="0">
+                <p class="text-[10px] text-gray-500">โดยทั่วไป Root คือ 0; ถ้าต้องการสแกนโฟลเดอร์เฉพาะ ให้ใช้ Object ID ของโฟลเดอร์นั้น</p>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="saveNasSettings()" class="flex-1 bg-gray-800 hover:bg-gray-700 py-2.5 rounded font-bold text-sm">บันทึก</button>
+                <button onclick="testNasConnection()" class="flex-1 bg-gray-800 hover:bg-gray-700 py-2.5 rounded font-bold text-sm text-orange-400">ตรวจการเชื่อมต่อ TS200</button>
+            </div>
+
+            <button onclick="scanNasNow()" class="w-full bg-orange-600 hover:bg-orange-500 py-3 rounded font-bold text-white text-sm shadow">
+                <i class="fa-solid fa-folder-tree mr-2"></i> สแกนไฟล์ทั้งหมดแบบ Recursive
+            </button>
+
+            <button onclick="cancelScan()" class="w-full bg-gray-900 hover:bg-gray-800 py-2 rounded text-gray-300 text-xs">
+                หยุดการสแกน
+            </button>
+
+            <div class="bg-black/40 border border-gray-800 rounded-lg p-3 text-xs text-gray-400">
+                <b class="text-white">TS200:</b> รุ่นนี้ใช้ Weline OS และรองรับ DLNA/Samba
+                โดย DLNA จะเผยแพร่เฉพาะโฟลเดอร์ที่เพิ่มไว้ใน <b>LAN Share → DLNA</b> ของ NAS
+                ดังนั้นต้องเพิ่มโฟลเดอร์หนัง/ซีรีส์ใน DLNA Scan Path ก่อนสแกนจาก VORTEX
             </div>
 
             <div class="pt-2">
-                <button onclick="closeSettings()" class="w-full bg-gray-800 hover:bg-gray-700 py-2.5 rounded font-bold transition text-sm">ปิดหน้าต่าง</button>
+                <button onclick="closeSettings()" class="w-full bg-gray-800 hover:bg-gray-700 py-2.5 rounded font-bold text-sm">ปิดหน้าต่าง</button>
             </div>
         </div>
     </div>
@@ -227,268 +201,597 @@
         </div>
     </div>
 
+
+    <div id="episodesModal" class="fixed inset-0 bg-black/85 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#181818] border border-gray-800 w-full max-w-4xl rounded-xl overflow-hidden shadow-2xl">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-800">
+                <div>
+                    <p class="text-xs text-orange-400 font-bold uppercase tracking-wider">Series</p>
+                    <h3 id="episodesTitle" class="text-2xl font-extrabold">เลือกตอน</h3>
+                </div>
+                <button onclick="closeEpisodes()" class="text-gray-400 hover:text-white w-10 h-10 rounded-full hover:bg-gray-800 transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div id="episodesList" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[65vh] overflow-y-auto pr-1"></div>
+            </div>
+        </div>
+    </div>
+
     <div id="toast" class="fixed bottom-8 right-8 bg-gray-800 text-white px-6 py-3 rounded shadow-lg border border-gray-700 transform translate-y-32 opacity-0 transition-all duration-300 z-50">
         ข้อความแจ้งเตือน
     </div>
 
+
     <script>
-        let nasFiles = [
-            { id: 1, title: "Interstellar 4K HDR", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", banner: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80", year: "2014", resolution: "4K", size: "12.4 GB", desc: "การเดินทางทะลุรูหนอนเพื่อหาบ้านใหม่ให้มนุษยชาติ อ่านไฟล์ผ่าน DLNA Server Scan Path" },
-            { id: 2, title: "Big Buck Bunny", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", banner: "https://images.unsplash.com/photo-1560169897-fc0cdbdfa4d5?auto=format&fit=crop&w=800&q=80", year: "2008", resolution: "1080p", size: "1.2 GB", desc: "แอนิเมชันขนาดสั้นคลาสสิกสำหรับทดสอบสตรีมมิ่งผ่าน DLNA" },
-            { id: 3, title: "Sintel - Season 1 Ep 1", type: "series", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", banner: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=800&q=80", year: "2010", resolution: "1080p", size: "1.5 GB", desc: "ซีรีส์อนิเมชันการเดินทางตามหามังกรคู่ใจ อ่านจากโฟลเดอร์แชร์ DLNA" }
-        ];
+        /*
+         * VORTEX STREAM - Real DLNA/UPnP browser
+         *
+         * IMPORTANT:
+         * A normal browser cannot read a NAS filesystem path such as
+         * /Public space/หนัง directly. The NAS must expose a DLNA/UPnP
+         * ContentDirectory SOAP endpoint, and that endpoint must allow
+         * cross-origin requests (CORS). If it does not, use the optional
+         * local proxy described in the settings panel.
+         */
 
-        let currentTab = 'home';
+        const DEFAULT_NAS = {
+            host: "192.168.1.107",
+            port: "80",
+            servicePath: "/ContentDirectory/control",
+            scanPath: "0",
+            proxyUrl: "http://127.0.0.1:8787"
+        };
 
-        function testNasConnection() {
-            showToast("กำลังตรวจสอบสถานะการเชื่อมต่อ Orico NAS...");
-            const statusContainer = document.getElementById('liveStatusContainer');
-            const statusDot = document.getElementById('liveStatusDot');
-            const statusPulse = document.getElementById('liveStatusPulse');
-            const statusText = document.getElementById('liveStatusText');
-            const pingText = document.getElementById('livePingText');
-            const settingsTitle = document.getElementById('settingsNasStateTitle');
-            const settingsIp = document.getElementById('settingsNasIpDetail');
+        let nasConfig = Object.assign({}, DEFAULT_NAS, JSON.parse(localStorage.getItem("vortexNasConfig") || "null") || {});
+        let nasFiles = [];
+        let currentTab = "home";
+        let scanAbort = false;
 
-            setTimeout(() => {
-                const randomPing = Math.floor(Math.random() * 5) + 1;
-                statusContainer.className = "flex items-center space-x-2.5 bg-black/60 border border-green-500/50 px-3.5 py-1.5 rounded-full shadow-lg backdrop-blur";
-                statusDot.className = "w-3 h-3 rounded-full bg-green-500 relative";
-                statusPulse.className = "w-3 h-3 rounded-full bg-green-500 animate-ping absolute";
-                statusText.innerText = "เชื่อมต่อ Orico NAS แล้ว";
-                pingText.innerText = `Ping: ${randomPing}ms • 192.168.1.107`;
-                
-                if (settingsTitle) settingsTitle.innerText = "Orico NAS Online (Stable)";
-                if (settingsIp) settingsIp.innerText = `IP: 192.168.1.107 • Ping: ${randomPing}ms • DLNA / SMB Active`;
+        const VIDEO_EXT = /\.(mp4|mkv|m4v|avi|mov|wmv|flv|webm|ts|m2ts|mts|mpg|mpeg|vob|3gp|ogm|asf)$/i;
 
-                showToast(`เชื่อมต่อ Orico NAS สำเร็จ! (Response time: ${randomPing}ms)`);
-            }, 600);
+        function esc(value) {
+            return String(value ?? "").replace(/[&<>"']/g, ch => ({
+                "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
+            }[ch]));
+        }
+
+        function getDlnaUrl() {
+            const host = String(nasConfig.host || "").trim();
+            const port = String(nasConfig.port || "").trim();
+            let path = String(nasConfig.servicePath || "/ContentDirectory/control").trim();
+
+            if (!host) throw new Error("ยังไม่ได้ระบุ IP ของ NAS");
+            if (!/^https?:\/\//i.test(host)) {
+                return `http://${host}${port ? ":" + port : ""}${path.startsWith("/") ? path : "/" + path}`;
+            }
+            return `${host}${path.startsWith("/") ? path : "/" + path}`;
+        }
+
+        function soapEnvelope(objectId, startingIndex = 0, requestedCount = 1000, sortCriteria = "") {
+            return `<?xml version="1.0" encoding="utf-8"?>
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+<s:Body>
+<u:Browse xmlns:u="urn:schemas-upnp-org:service:ContentDirectory:1">
+<ObjectID>${escXml(objectId)}</ObjectID>
+<BrowseFlag>BrowseDirectChildren</BrowseFlag>
+<Filter>*</Filter>
+<StartingIndex>${startingIndex}</StartingIndex>
+<RequestedCount>${requestedCount}</RequestedCount>
+<SortCriteria>${escXml(sortCriteria)}</SortCriteria>
+</u:Browse>
+</s:Body>
+</s:Envelope>`;
+        }
+
+        function escXml(value) {
+            return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+        }
+
+        function getProxyBase() {
+            const base = String(nasConfig.proxyUrl || "http://127.0.0.1:8787").trim().replace(/\/$/, "");
+            return base;
+        }
+
+        async function apiBrowse(objectId = "0", startingIndex = 0, requestedCount = 1000) {
+            const response = await fetch(`${getProxyBase()}/api/browse?objectId=${encodeURIComponent(objectId)}&startingIndex=${startingIndex}&requestedCount=${requestedCount}`, {
+                headers: { "Accept": "application/json" }
+            });
+            const data = await response.json();
+            if (!response.ok || data.error) throw new Error(data.error || `Proxy HTTP ${response.status}`);
+            return data;
+        }
+
+        async function apiDiscover() {
+            const response = await fetch(`${getProxyBase()}/api/discover?host=${encodeURIComponent(nasConfig.host)}`, {
+                headers: { "Accept": "application/json" }
+            });
+            const data = await response.json();
+            if (!response.ok || data.error) throw new Error(data.error || `Discovery HTTP ${response.status}`);
+            return data;
+        }
+
+        async function dlnaBrowse(objectId, startingIndex = 0, requestedCount = 1000) {
+            return apiBrowse(objectId, startingIndex, requestedCount);
+        }
+
+        async function browseAllChildren(objectId) {
+            const pageSize = 500;
+            let startIndex = 0;
+            let total = Infinity;
+            const output = [];
+
+            while (startIndex < total && !scanAbort) {
+                const page = await apiBrowse(objectId, startIndex, pageSize);
+                total = Number(page.totalMatches) || (startIndex + (page.items || []).length);
+                output.push(...(page.items || []));
+
+                if (!page.items?.length || page.items.length < pageSize) break;
+                startIndex += page.items.length;
+            }
+            return output;
+        }
+
+        function normalizeVideoUrl(url) {
+            if (!url) return "";
+            try { return new URL(url, `http://${nasConfig.host}`).href; }
+            catch { return url; }
+        }
+
+        function formatBytes(bytes) {
+            if (!bytes) return "";
+            const units = ["B", "KB", "MB", "GB", "TB"];
+            let n = bytes, i = 0;
+            while (n >= 1024 && i < units.length - 1) { n /= 1024; i++; }
+            return `${n.toFixed(n >= 10 || i === 0 ? 0 : 1)} ${units[i]}`;
+        }
+
+        function guessResolution(item) {
+            if (item.resolution) return item.resolution;
+            const t = item.title.toLowerCase();
+            if (/\b(2160p|4k|uhd)\b/.test(t)) return "4K";
+            if (/\b(1080p|fhd)\b/.test(t)) return "1080p";
+            if (/\b720p\b/.test(t)) return "720p";
+            return "Video";
+        }
+
+        function parseSeasonEpisode(title) {
+            let m = title.match(/\bS(\d{1,2})\s*E(\d{1,3})\b/i);
+            if (m) return { season: Number(m[1]), episode: Number(m[2]) };
+
+            m = title.match(/\b(\d{1,2})x(\d{1,3})\b/i);
+            if (m) return { season: Number(m[1]), episode: Number(m[2]) };
+
+            m = title.match(/\bSeason[\s._-]*(\d+)[\s._-]*(?:Episode|Ep|E)?[\s._-]*(\d+)\b/i);
+            if (m) return { season: Number(m[1]), episode: Number(m[2]) };
+
+            return null;
+        }
+
+        function cleanSeriesTitle(title) {
+            return title
+                .replace(/\.[^.]+$/, "")
+                .replace(/\bS\d{1,2}\s*E\d{1,3}\b.*$/i, "")
+                .replace(/\b\d{1,2}x\d{1,3}\b.*$/i, "")
+                .replace(/\bSeason[\s._-]*\d+.*$/i, "")
+                .replace(/[\s._-]+$/, "")
+                .trim();
+        }
+
+        function enrichMedia(items) {
+            return items.filter(x => x.kind === "item" && x.url && (
+                VIDEO_EXT.test(x.url.split("?")[0]) ||
+                /^video\//i.test((x.protocolInfo || "").split(":")[2] || "") ||
+                /videoitem/i.test(x.className)
+            )).map((x, index) => {
+                const ep = parseSeasonEpisode(x.title);
+                return {
+                    id: `dlna-${index}-${x.id}`,
+                    sourceId: x.id,
+                    title: x.title,
+                    type: ep ? "series" : "movie",
+                    url: normalizeVideoUrl(x.url),
+                    banner: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80",
+                    year: "",
+                    resolution: guessResolution(x),
+                    size: formatBytes(x.size),
+                    duration: x.duration,
+                    desc: `ไฟล์จาก DLNA: ${x.title}`,
+                    season: ep?.season,
+                    episode: ep?.episode
+                };
+            });
+        }
+
+        async function recursiveScan(rootId, maxDepth = 20) {
+            const files = [];
+            const queue = [{ id: rootId, depth: 0 }];
+            const visited = new Set();
+
+            while (queue.length && !scanAbort) {
+                const current = queue.shift();
+                if (visited.has(current.id) || current.depth > maxDepth) continue;
+                visited.add(current.id);
+
+                showToast(`กำลังสแกน DLNA… พบไฟล์แล้ว ${files.length} รายการ`);
+                const children = await browseAllChildren(current.id);
+
+                for (const child of children) {
+                    if (child.kind === "container") {
+                        queue.push({ id: child.id, depth: current.depth + 1 });
+                    } else if (child.kind === "item" && child.url) {
+                        files.push(child);
+                    }
+                }
+            }
+            return files;
+        }
+
+        function buildSeriesCatalog(files) {
+            const seriesMap = new Map();
+            const movies = [];
+
+            for (const f of files) {
+                const parsed = parseSeasonEpisode(f.title);
+                if (!parsed) {
+                    movies.push(f);
+                    continue;
+                }
+
+                const name = cleanSeriesTitle(f.title);
+                const key = name.toLowerCase();
+                if (!seriesMap.has(key)) {
+                    seriesMap.set(key, {
+                        id: `series-${seriesMap.size}`,
+                        title: name,
+                        type: "series",
+                        banner: f.banner,
+                        year: f.year,
+                        resolution: "Series",
+                        size: "",
+                        desc: "ซีรีส์จาก DLNA",
+                        episodes: []
+                    });
+                }
+
+                seriesMap.get(key).episodes.push({
+                    episode: parsed.episode,
+                    season: parsed.season,
+                    title: f.title,
+                    url: f.url,
+                    duration: f.duration,
+                    resolution: f.resolution
+                });
+            }
+
+            for (const s of seriesMap.values()) {
+                s.episodes.sort((a,b) => a.season - b.season || a.episode - b.episode);
+            }
+
+            return { movies, series: [...seriesMap.values()] };
         }
 
         function renderRows() {
-            const continueRow = document.getElementById('continueRow');
-            const moviesRow = document.getElementById('moviesRow');
-            const seriesRow = document.getElementById('seriesRow');
-
+            const continueRow = document.getElementById("continueRow");
+            const moviesRow = document.getElementById("moviesRow");
+            const seriesRow = document.getElementById("seriesRow");
             if (!continueRow || !moviesRow || !seriesRow) return;
 
-            continueRow.innerHTML = '';
-            moviesRow.innerHTML = '';
-            seriesRow.innerHTML = '';
+            const catalog = buildSeriesCatalog(nasFiles);
+            continueRow.innerHTML = "";
+            moviesRow.innerHTML = "";
+            seriesRow.innerHTML = "";
 
-            let filteredFiles = nasFiles;
-            if (currentTab === 'movies') {
-                filteredFiles = nasFiles.filter(f => f.type === 'movie');
-            } else if (currentTab === 'series') {
-                filteredFiles = nasFiles.filter(f => f.type === 'series');
-            }
-
-            filteredFiles.forEach((file, index) => {
-                const cardHTML = `
-                    <div onclick="showDetailsById(${file.id})" tabindex="0" class="flex-shrink-0 w-64 h-36 bg-gray-800 rounded-lg overflow-hidden relative cursor-pointer tv-focus group shadow-lg transition-transform duration-200">
-                        <img src="${file.banner}" alt="${file.title}" class="w-full h-full object-cover group-hover:scale-110 transition duration-300" onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-3">
-                            <span class="text-xs text-orange-400 font-bold">${file.resolution} • ${file.year}</span>
-                            <h4 class="text-sm font-semibold truncate">${file.title}</h4>
-                        </div>
-                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 transition">
-                            <div class="w-10 h-10 rounded-full bg-netflix flex items-center justify-center text-white shadow">
-                                <i class="fa-solid fa-play ml-0.5"></i>
-                            </div>
+            const makeCard = (file) => {
+                const isSeries = file.type === "series";
+                return `
+                <div onclick="${isSeries ? `showEpisodesById('${esc(file.id)}')` : `showDetailsById('${esc(file.id)}')`}"
+                     tabindex="0"
+                     class="flex-shrink-0 w-64 h-36 bg-gray-800 rounded-lg overflow-hidden relative cursor-pointer tv-focus group shadow-lg transition-transform duration-200">
+                    <img src="${esc(file.banner)}" alt="${esc(file.title)}"
+                         class="w-full h-full object-cover group-hover:scale-110 transition duration-300"
+                         onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-3">
+                        <span class="text-xs text-orange-400 font-bold">${esc(file.resolution || (isSeries ? "Series" : "Video"))}${file.year ? " • " + esc(file.year) : ""}</span>
+                        <h4 class="text-sm font-semibold truncate">${esc(file.title)}</h4>
+                        ${isSeries ? `<span class="text-[10px] text-gray-400 mt-1">${file.episodes.length} ตอน • กดเพื่อเลือกตอน</span>` : ""}
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 transition">
+                        <div class="w-10 h-10 rounded-full bg-netflix flex items-center justify-center text-white shadow">
+                            <i class="fa-solid ${isSeries ? "fa-list-ol" : "fa-play"}"></i>
                         </div>
                     </div>
-                `;
+                </div>`;
+            };
 
-                if (index < 2 && currentTab === 'home') {
-                    continueRow.innerHTML += cardHTML;
+            const movies = catalog.movies;
+            const series = catalog.series;
+
+            if (currentTab === "home") {
+                movies.slice(0, 12).forEach(x => moviesRow.innerHTML += makeCard(x));
+                series.slice(0, 12).forEach(x => seriesRow.innerHTML += makeCard(x));
+                if (!nasFiles.length) {
+                    continueRow.innerHTML = `<div class="text-gray-500 text-sm py-4">ยังไม่มีไฟล์จาก NAS — กด “สแกน NAS” เพื่อเริ่มค้นหา</div>`;
+                } else {
+                    [...movies.slice(0,2), ...series.slice(0,2)].forEach(x => continueRow.innerHTML += makeCard(x));
                 }
-                if (file.type === 'movie') {
-                    moviesRow.innerHTML += cardHTML;
-                } else if (file.type === 'series') {
-                    seriesRow.innerHTML += cardHTML;
-                }
-            });
+            } else if (currentTab === "movies") {
+                movies.forEach(x => moviesRow.innerHTML += makeCard(x));
+            } else if (currentTab === "series") {
+                series.forEach(x => seriesRow.innerHTML += makeCard(x));
+            }
+
+            document.getElementById("movieCount")?.replaceChildren(document.createTextNode(`${movies.length} เรื่อง`));
+            document.getElementById("seriesCount")?.replaceChildren(document.createTextNode(`${series.length} ซีรีส์`));
+            document.getElementById("fileCount")?.replaceChildren(document.createTextNode(`${nasFiles.length} ไฟล์`));
         }
 
         function switchTab(tab) {
             currentTab = tab;
-            document.getElementById('nav-home').className = tab === 'home' ? 'text-white hover:text-orange-400 transition border-b-2 border-netflix pb-1 font-bold' : 'text-gray-300 hover:text-white transition pb-1';
-            document.getElementById('nav-movies').className = tab === 'movies' ? 'text-white hover:text-orange-400 transition border-b-2 border-netflix pb-1 font-bold' : 'text-gray-300 hover:text-white transition pb-1';
-            document.getElementById('nav-series').className = tab === 'series' ? 'text-white hover:text-orange-400 transition border-b-2 border-netflix pb-1 font-bold' : 'text-gray-300 hover:text-white transition pb-1';
+            const classes = {
+                active: "text-white hover:text-orange-400 transition border-b-2 border-netflix pb-1 font-bold",
+                idle: "text-gray-300 hover:text-white transition pb-1"
+            };
+            document.getElementById("nav-home").className = tab === "home" ? classes.active : classes.idle;
+            document.getElementById("nav-movies").className = tab === "movies" ? classes.active : classes.idle;
+            document.getElementById("nav-series").className = tab === "series" ? classes.active : classes.idle;
 
-            const sectionContinue = document.getElementById('sectionContinue');
-            const sectionMovies = document.getElementById('sectionMovies');
-            const sectionSeries = document.getElementById('sectionSeries');
-
-            if (tab === 'home') {
-                sectionContinue.style.display = 'block';
-                sectionMovies.style.display = 'block';
-                sectionSeries.style.display = 'block';
-            } else if (tab === 'movies') {
-                sectionContinue.style.display = 'none';
-                sectionMovies.style.display = 'block';
-                sectionSeries.style.display = 'none';
-            } else if (tab === 'series') {
-                sectionContinue.style.display = 'none';
-                sectionMovies.style.display = 'none';
-                sectionSeries.style.display = 'block';
-            }
-
+            document.getElementById("sectionContinue").style.display = tab === "home" ? "block" : "none";
+            document.getElementById("sectionMovies").style.display = (tab === "home" || tab === "movies") ? "block" : "none";
+            document.getElementById("sectionSeries").style.display = (tab === "home" || tab === "series") ? "block" : "none";
             renderRows();
         }
 
-        function toggleDlnaStatus() {
-            const isChecked = document.getElementById('dlnaToggle').checked;
-            const statusContainer = document.getElementById('liveStatusContainer');
-            const statusDot = document.getElementById('liveStatusDot');
-            const statusPulse = document.getElementById('liveStatusPulse');
-            const statusText = document.getElementById('liveStatusText');
-            const pingText = document.getElementById('livePingText');
+        function showEpisodesById(id) {
+            const series = buildSeriesCatalog(nasFiles).series.find(s => s.id === id);
+            if (!series) return;
 
-            if (isChecked) {
-                statusContainer.className = "flex items-center space-x-2.5 bg-black/60 border border-green-500/50 px-3.5 py-1.5 rounded-full shadow-lg backdrop-blur";
-                statusDot.className = "w-3 h-3 rounded-full bg-green-500 relative";
-                statusPulse.className = "w-3 h-3 rounded-full bg-green-500 animate-ping absolute";
-                statusText.innerText = "เชื่อมต่อ Orico NAS แล้ว";
-                pingText.innerText = "Ping: 2ms • 192.168.1.107";
-                showToast("เปิดใช้งาน DLNA Protocol และเชื่อมต่อ NAS สำเร็จ");
-            } else {
-                statusContainer.className = "flex items-center space-x-2.5 bg-black/60 border border-red-500/50 px-3.5 py-1.5 rounded-full shadow-lg backdrop-blur";
-                statusDot.className = "w-3 h-3 rounded-full bg-red-500 relative";
-                statusPulse.className = "w-3 h-3 rounded-full bg-red-500 animate-ping absolute";
-                statusText.innerText = "DLNA ปิดใช้งาน / ออฟไลน์";
-                pingText.innerText = "Disconnected";
-                showToast("ปิดการใช้งาน DLNA Protocol แล้ว");
-            }
+            const title = document.getElementById("episodesTitle");
+            const list = document.getElementById("episodesList");
+            title.innerText = series.title;
+
+            list.innerHTML = series.episodes.map((ep, idx) => `
+                <button onclick="playSeriesEpisode('${esc(series.id)}', ${idx})"
+                    class="w-full text-left bg-gray-900 hover:bg-gray-800 border border-gray-800 hover:border-orange-500/60 rounded-lg p-4 transition group flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-lg bg-orange-600/15 text-orange-400 flex items-center justify-center font-extrabold shrink-0">
+                        ${String(ep.episode).padStart(2, "0")}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="font-bold text-white truncate">${esc(ep.title)}</div>
+                        <div class="text-xs text-gray-400 mt-1">Season ${ep.season}${ep.duration ? " • " + esc(ep.duration) : ""}</div>
+                    </div>
+                    <i class="fa-solid fa-play text-orange-400 opacity-70 group-hover:opacity-100"></i>
+                </button>
+            `).join("");
+
+            document.getElementById("episodesModal").classList.remove("hidden");
         }
 
-        function openDlnaScanPath() {
-            const panel = document.getElementById('dlnaScanPathPanel');
-            panel.classList.toggle('hidden');
+        function playSeriesEpisode(seriesId, index) {
+            const series = buildSeriesCatalog(nasFiles).series.find(s => s.id === seriesId);
+            const ep = series?.episodes[index];
+            if (!ep) return;
+            closeEpisodes();
+            playVideo(ep.url, `${series.title} • ${ep.title}`);
         }
 
-        function addScanPath() {
-            const pathInput = document.getElementById('newScanPath');
-            if (!pathInput.value) {
-                showToast("กรุณาระบุเส้นทางโฟลเดอร์ Scan Path");
-                return;
-            }
-            showToast(`เพิ่มโฟลเดอร์ ${pathInput.value} สำเร็จ!`);
-            pathInput.value = '';
-        }
-
-        function autoScanNasFolder() {
-            showToast("กำลังสแกนเจาะลึกโฟลเดอร์ 'หนัง' และทุกโฟลเดอร์ย่อยใน Orico NAS...");
-            setTimeout(() => {
-                const discoveredFiles = [
-                    { id: 4, title: "Avatar The Way of Water (4K Remaster)", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", banner: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80", year: "2023", resolution: "4K", size: "18.2 GB", desc: "พบไฟล์ในโฟลเดอร์ย่อย /Public space/หนัง/" },
-                    { id: 5, title: "Cyberpunk Edgerunners S01E01", type: "series", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", banner: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80", year: "2022", resolution: "1080p", size: "1.8 GB", desc: "พบไฟล์ซีรีส์ในโฟลเดอร์ย่อย /Public space/หนัง/Series/" },
-                    { id: 6, title: "Spider-Man Across The Spider-Verse", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackSeeTheWorld.mp4", banner: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=800&q=80", year: "2023", resolution: "4K", size: "14.1 GB", desc: "พบไฟล์ในโฟลเดอร์ย่อย /Public space/หนัง/Action/" },
-                    { id: 7, title: "Inception 4K Remastered", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", banner: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80", year: "2010", resolution: "4K", size: "15.0 GB", desc: "ภาพยนตร์ไซไฟฟอร์มยักษ์จากโฟลเดอร์ Orico NAS" },
-                    { id: 8, title: "The Dark Knight 4K IMAX", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", banner: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80", year: "2008", resolution: "4K", size: "16.5 GB", desc: "สแกนเจอจากโฟลเดอร์ย่อย 'หนัง' สำเร็จ" },
-                    { id: 9, title: "Interstellar Director's Cut", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", banner: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80", year: "2014", resolution: "4K", size: "20.1 GB", desc: "สแกนเจอจากโฟลเดอร์ย่อย 'หนัง' สำเร็จ" },
-                    { id: 10, title: "Spider-Man No Way Home", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackSeeTheWorld.mp4", banner: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=800&q=80", year: "2021", resolution: "1080p", size: "8.4 GB", desc: "สแกนเจอจากโฟlเดอร์ย่อย 'หนัง' สำเร็จ" },
-                    { id: 11, title: "Jujutsu Kaisen Season 2 Ep 1", type: "series", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", banner: "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80", year: "2023", resolution: "1080p", size: "1.4 GB", desc: "สแกนเจอจากโฟลเดอร์ซีรีส์สำเร็จ" }
-                ];
-
-                discoveredFiles.forEach(f => {
-                    if (!nasFiles.some(existing => existing.title === f.title)) {
-                        nasFiles.push(f);
-                    }
-                });
-
-                renderRows();
-                closeSettings();
-                showToast("สแกนเจาะลึกโฟลเดอร์ 'หนัง' และพบไฟล์วิดีโอทั้งหมดเพิ่มรวม 11 รายการเรียบร้อย!");
-            }, 1200);
+        function closeEpisodes() {
+            document.getElementById("episodesModal").classList.add("hidden");
         }
 
         function showDetailsById(id) {
             const file = nasFiles.find(f => f.id === id);
             if (!file) return;
 
-            const bannerEl = document.getElementById('detailsBanner');
-            if (bannerEl) {
-                bannerEl.style.backgroundImage = `linear-gradient(to top, #181818, transparent), url('${file.banner}')`;
-            }
-            const titleEl = document.getElementById('detTitle');
-            if (titleEl) titleEl.innerText = file.title;
-            const yearEl = document.getElementById('detYear');
-            if (yearEl) yearEl.innerText = file.year;
-            const resEl = document.getElementById('detResolution');
-            if (resEl) resEl.innerText = file.resolution;
-            const sizeEl = document.getElementById('detSize');
-            if (sizeEl) sizeEl.innerText = file.size;
-            const descEl = document.getElementById('detDesc');
-            if (descEl) descEl.innerText = file.desc;
-            
-            const playBtn = document.getElementById('detPlayBtn');
-            if (playBtn) {
-                playBtn.onclick = () => {
-                    closeDetails();
-                    playVideo(file.url, file.title);
-                };
-            }
+            document.getElementById("detailsBanner").style.backgroundImage =
+                `linear-gradient(to top, #181818, transparent), url('${file.banner}')`;
+            document.getElementById("detTitle").innerText = file.title;
+            document.getElementById("detYear").innerText = file.year || "DLNA";
+            document.getElementById("detResolution").innerText = file.resolution || "Video";
+            document.getElementById("detSize").innerText = file.size || "DLNA Stream";
+            document.getElementById("detDesc").innerText = file.desc || "ไฟล์วิดีโอจาก Orico NAS";
 
-            const detailsModal = document.getElementById('detailsModal');
-            if (detailsModal) detailsModal.classList.remove('hidden');
+            document.getElementById("detPlayBtn").onclick = () => {
+                closeDetails();
+                playVideo(file.url, file.title);
+            };
+            document.getElementById("detailsModal").classList.remove("hidden");
         }
 
         function showDetails(type) {
-            if (type === 'hero') {
-                showDetailsById(nasFiles[0].id);
+            if (type === "hero") {
+                const first = nasFiles[0];
+                if (first) showDetailsById(first.id);
             }
         }
 
         function closeDetails() {
-            document.getElementById('detailsModal').classList.add('hidden');
+            document.getElementById("detailsModal").classList.add("hidden");
         }
 
         function playHeroMedia() {
-            playVideo(nasFiles[0].url, nasFiles[0].title);
+            if (nasFiles[0]) playVideo(nasFiles[0].url, nasFiles[0].title);
+            else showToast("ยังไม่มีไฟล์ กรุณาสแกน NAS ก่อน");
         }
 
         function playVideo(url, title) {
-            const modal = document.getElementById('playerModal');
-            const video = document.getElementById('videoPlayer');
-            document.getElementById('nowPlayingTitle').innerText = title;
+            if (!url) {
+                showToast("ไฟล์นี้ไม่มี URL สำหรับสตรีม");
+                return;
+            }
+            const modal = document.getElementById("playerModal");
+            const video = document.getElementById("videoPlayer");
+            document.getElementById("nowPlayingTitle").innerText = title;
             video.src = url;
-            modal.classList.remove('hidden');
-            video.play().catch(err => {
-                showToast("กดปุ่มเล่นบนเครื่องเล่นเพื่อเริ่มสตรีม");
-            });
+            modal.classList.remove("hidden");
+            video.play().catch(() => showToast("กดปุ่ม ▶ บนเครื่องเล่นเพื่อเริ่มสตรีม"));
         }
 
         function closePlayer() {
-            const modal = document.getElementById('playerModal');
-            const video = document.getElementById('videoPlayer');
+            const video = document.getElementById("videoPlayer");
             video.pause();
-            video.src = '';
-            modal.classList.add('hidden');
+            video.removeAttribute("src");
+            video.load();
+            document.getElementById("playerModal").classList.add("hidden");
         }
 
-        function openSettings() {
-            document.getElementById('settingsModal').classList.remove('hidden');
-        }
+        function updateStatus(online, message, detail = "") {
+            const c = document.getElementById("liveStatusContainer");
+            const dot = document.getElementById("liveStatusDot");
+            const pulse = document.getElementById("liveStatusPulse");
+            const text = document.getElementById("liveStatusText");
+            const ping = document.getElementById("livePingText");
 
-        function closeSettings() {
-            document.getElementById('settingsModal').classList.add('hidden');
+            if (online) {
+                c.className = "flex items-center space-x-2.5 bg-black/60 border border-green-500/50 px-3.5 py-1.5 rounded-full shadow-lg backdrop-blur";
+                dot.className = "w-3 h-3 rounded-full bg-green-500 relative";
+                pulse.className = "w-3 h-3 rounded-full bg-green-500 animate-ping absolute";
+                text.innerText = message || "DLNA Online";
+                ping.innerText = detail || `${nasConfig.host}:${nasConfig.port}`;
+            } else {
+                c.className = "flex items-center space-x-2.5 bg-black/60 border border-red-500/50 px-3.5 py-1.5 rounded-full shadow-lg backdrop-blur";
+                dot.className = "w-3 h-3 rounded-full bg-red-500 relative";
+                pulse.className = "w-3 h-3 rounded-full bg-red-500 absolute";
+                text.innerText = message || "DLNA Offline";
+                ping.innerText = detail || "ไม่สามารถติดต่อ DLNA";
+            }
         }
 
         function showToast(message) {
-            const toast = document.getElementById('toast');
+            const toast = document.getElementById("toast");
             if (!toast) return;
             toast.innerText = message;
-            toast.classList.remove('translate-y-32', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-32', 'opacity-0');
-            }, 3000);
+            toast.classList.remove("translate-y-32", "opacity-0");
+            clearTimeout(window.__toastTimer);
+            window.__toastTimer = setTimeout(() => {
+                toast.classList.add("translate-y-32", "opacity-0");
+            }, 3500);
         }
 
-        window.onload = () => {
+        function loadCachedMedia() {
+            try {
+                const cached = JSON.parse(localStorage.getItem("vortexNasFiles") || "[]");
+                if (Array.isArray(cached) && cached.length) {
+                    nasFiles = cached;
+                    renderRows();
+                }
+            } catch {}
+        }
+
+        function openSettings() {
+            document.getElementById("settingsModal").classList.remove("hidden");
+            document.getElementById("nasHostInput").value = nasConfig.host;
+            document.getElementById("nasPortInput").value = nasConfig.port;
+            document.getElementById("proxyUrlInput").value = nasConfig.proxyUrl || "http://127.0.0.1:8787";
+            document.getElementById("nasServiceInput").value = nasConfig.servicePath;
+            document.getElementById("nasRootInput").value = nasConfig.scanPath;
+        }
+
+        function closeSettings() {
+            document.getElementById("settingsModal").classList.add("hidden");
+        }
+
+        function saveNasSettings() {
+            nasConfig = {
+                host: document.getElementById("nasHostInput").value.trim(),
+                port: document.getElementById("nasPortInput").value.trim(),
+                proxyUrl: document.getElementById("proxyUrlInput").value.trim().replace(/\/$/, "") || "http://127.0.0.1:8787",
+                servicePath: document.getElementById("nasServiceInput").value.trim() || "/ContentDirectory/control",
+                scanPath: document.getElementById("nasRootInput").value.trim() || "0"
+            };
+            localStorage.setItem("vortexNasConfig", JSON.stringify(nasConfig));
+            showToast("บันทึกการตั้งค่า NAS แล้ว");
+        }
+
+        async function testNasConnection() {
+            saveNasSettings();
+            if (location.protocol === "file:") {
+                showToast("กำลังใช้ไฟล์ HTML โดยตรง — ตรวจให้แน่ใจว่า Proxy เปิดอยู่ที่ " + getProxyBase());
+            }
+            updateStatus(false, "กำลังค้นหา TS200 DLNA…", nasConfig.host);
+
+            try {
+                const info = await apiDiscover();
+                updateStatus(true, "TS200 DLNA Online", `${info.friendlyName || "ORICO TS200"} • ${info.serviceType || "ContentDirectory"}`);
+                document.getElementById("settingsNasStateTitle").innerText = "ORICO TS200 • DLNA Online";
+                document.getElementById("settingsNasIpDetail").innerText =
+                    `IP: ${nasConfig.host} • ${info.location || "ค้นพบผ่าน SSDP"} • ContentDirectory พร้อมใช้งาน`;
+                showToast(`พบ ${info.friendlyName || "ORICO TS200"} และ ContentDirectory แล้ว`);
+                return true;
+            } catch (err) {
+                updateStatus(false, "TS200 DLNA ไม่พร้อม", nasConfig.host);
+                document.getElementById("settingsNasStateTitle").innerText = "ไม่พบ DLNA ของ TS200";
+                document.getElementById("settingsNasIpDetail").innerText = String(err.message).slice(0, 240);
+                showToast("ค้นหา TS200 ไม่สำเร็จ: " + err.message);
+                return false;
+            }
+        }
+
+        async function scanNasNow() {
+            saveNasSettings();
+            scanAbort = false;
+            const ok = await testNasConnection();
+            if (!ok) return;
+
+            try {
+                showToast("กำลังซิงค์รายการจาก TS200 แบบ Recursive…");
+                const raw = await recursiveScan(nasConfig.scanPath || "0");
+                nasFiles = enrichMedia(raw);
+                localStorage.setItem("vortexNasFiles", JSON.stringify(nasFiles));
+                localStorage.setItem("vortexLastSync", new Date().toISOString());
+                renderRows();
+                closeSettings();
+
+                const catalog = buildSeriesCatalog(nasFiles);
+                showToast(`สแกนเสร็จ: พบ ${nasFiles.length} ไฟล์ • ${catalog.movies.length} หนัง • ${catalog.series.length} ซีรีส์`);
+            } catch (err) {
+                showToast("สแกน TS200 ไม่สำเร็จ: " + err.message);
+                console.error(err);
+            }
+        }
+
+        function cancelScan() {
+            scanAbort = true;
+            showToast("หยุดการสแกนแล้ว");
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadCachedMedia();
             renderRows();
-            testNasConnection();
-        };
+        });
+
+        // Backward-compatible button names from the original UI.
+        function autoScanNasFolder() { scanNasNow(); }
+        function toggleDlnaStatus() {
+            const checked = document.getElementById("dlnaToggle").checked;
+            if (!checked) {
+                updateStatus(false, "DLNA ปิดใช้งาน", "Disconnected");
+                showToast("ปิดการสแกน DLNA ในหน้าเว็บแล้ว");
+            } else {
+                testNasConnection();
+            }
+        }
+        function openDlnaScanPath() {
+            document.getElementById("dlnaScanPathPanel").classList.toggle("hidden");
+        }
+
+        function addScanPath() {
+            const path = document.getElementById("newScanPath").value.trim();
+            if (!path) return showToast("กรุณาระบุ Object ID/เส้นทาง DLNA");
+            document.getElementById("nasRootInput").value = path;
+            nasConfig.scanPath = path;
+            localStorage.setItem("vortexNasConfig", JSON.stringify(nasConfig));
+            showToast(`ตั้ง Scan Root เป็น ${path} แล้ว`);
+        }
+
+        window.addEventListener("load", () => {
+            // Replace fake demo state with an explicit real-DLNA state.
+            updateStatus(false, "ยังไม่ได้สแกน NAS", `${nasConfig.host}:${nasConfig.port}`);
+            renderRows();
+        });
     </script>
+
 </body>
 </html>
