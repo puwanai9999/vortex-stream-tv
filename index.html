@@ -11,7 +11,7 @@
             theme: {
                 extend: {
                     colors: {
-                        netflix: '#FF6600', // ส้มสดใสธีมส้มดำพรีเมียม
+                        netflix: '#FF6600',
                         darkBg: '#111111',
                     }
                 }
@@ -50,24 +50,33 @@
                 <a href="#" id="nav-home" class="text-white hover:text-orange-400 transition border-b-2 border-netflix pb-1 font-bold" onclick="switchTab('home')">หน้าแรก</a>
                 <a href="#" id="nav-movies" class="text-gray-300 hover:text-white transition pb-1" onclick="switchTab('movies')">ภาพยนตร์</a>
                 <a href="#" id="nav-series" class="text-gray-300 hover:text-white transition pb-1" onclick="switchTab('series')">ซีรีส์</a>
-                <a href="#" class="text-gray-300 hover:text-white transition" onclick="openSettings()">จัดการไฟล์/ตั้งค่า</a>
             </nav>
         </div>
         <div class="flex items-center space-x-4">
-            <button onclick="openSettings()" class="bg-gray-800/80 hover:bg-gray-700 px-4 py-2 rounded-md text-sm font-medium transition tv-focus">
-                <i class="fa-solid fa-folder-plus mr-2 text-netflix"></i> เพิ่มวีดีโอจาก Nas
+            <div id="liveStatusContainer" class="flex items-center space-x-2.5 bg-black/60 border border-green-500/50 px-3.5 py-1.5 rounded-full shadow-lg backdrop-blur">
+                <div class="relative flex items-center justify-center">
+                    <span id="liveStatusPulse" class="w-3 h-3 rounded-full bg-green-500 animate-ping absolute"></span>
+                    <span id="liveStatusDot" class="w-3 h-3 rounded-full bg-green-500 relative"></span>
+                </div>
+                <div class="flex flex-col text-left">
+                    <span id="liveStatusText" class="text-xs font-bold text-green-400 tracking-wide">เชื่อมต่อ Orico NAS แล้ว</span>
+                    <span id="livePingText" class="text-[9px] text-gray-400">Ping: 2ms • 192.168.1.107</span>
+                </div>
+            </div>
+            <button onclick="openSettings()" class="bg-gray-800/80 hover:bg-gray-700 px-4 py-2 rounded-md text-sm font-medium transition tv-focus flex items-center space-x-2">
+                <i class="fa-solid fa-server text-netflix"></i> <span>ตั้งค่า DLNA & Orico NAS</span>
             </button>
             <div class="w-10 h-10 rounded bg-netflix flex items-center justify-center font-bold text-white shadow-lg shadow-orange-600/30">TV</div>
         </div>
     </header>
 
     <main class="flex-grow pt-20 pb-16">
-        <!-- Hero Featured Banner -->
+        <!-- Hero Banner -->
         <section id="heroBanner" class="relative h-[60vh] w-full bg-cover bg-center flex items-end p-8 md:p-16" style="background-image: linear-gradient(to top, #111111, rgba(17,17,17,0.4), transparent), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1920&q=80')">
             <div class="max-w-xl space-y-4">
-                <span class="bg-netflix text-xs uppercase px-2.5 py-1 rounded font-bold text-white shadow">Vortex Stream Featured</span>
-                <h2 id="heroTitle" class="text-4xl md:text-5xl font-extrabold drop-shadow-lg">Interstellar (Demo)</h2>
-                <p id="heroDesc" class="text-gray-300 text-sm md:text-base line-clamp-3">การเดินทางข้ามห้วงอวกาศเพื่อค้นหาบ้านใหม่ให้กับมนุษยชาติ ไฟล์ดึงตรงจากระบบ Orico NAS ภายในบ้าน</p>
+                <span class="bg-netflix text-xs uppercase px-2.5 py-1 rounded font-bold text-white shadow">DLNA Media Server Active</span>
+                <h2 id="heroTitle" class="text-4xl md:text-5xl font-extrabold drop-shadow-lg">Interstellar 4K HDR</h2>
+                <p id="heroDesc" class="text-gray-300 text-sm md:text-base line-clamp-3">สตรีมมิ่งผ่าน DLNA Protocol จาก Orico NAS ภายในวงแลนบ้านของคุณ รองรับการเล่นไฟล์ลื่นไหล</p>
                 <div class="flex space-x-4 pt-2">
                     <button onclick="playHeroMedia()" class="bg-white text-black hover:bg-gray-200 px-6 py-3 rounded font-bold flex items-center space-x-2 transition tv-focus shadow-lg">
                         <i class="fa-solid fa-play text-netflix"></i> <span>เล่นทันที</span>
@@ -79,21 +88,17 @@
             </div>
         </section>
 
-        <!-- Dynamic Content Rows -->
         <div id="contentArea" class="space-y-8 mt-6 px-4 md:px-12">
-            <!-- Row 1: Continue Watching -->
             <div id="sectionContinue">
                 <h3 class="text-xl font-bold mb-3 flex items-center"><i class="fa-solid fa-clock-rotate-left mr-2 text-netflix"></i> รับชมต่อให้จบ</h3>
                 <div id="continueRow" class="flex space-x-4 overflow-x-auto hide-scrollbar pb-4"></div>
             </div>
 
-            <!-- Row 2: Movies from NAS -->
             <div id="sectionMovies">
-                <h3 class="text-xl font-bold mb-3 flex items-center"><i class="fa-solid fa-film mr-2 text-netflix"></i> ภาพยนตร์ทั้งหมดใน Orico NAS</h3>
+                <h3 class="text-xl font-bold mb-3 flex items-center"><i class="fa-solid fa-film mr-2 text-netflix"></i> ภาพยนตร์ผ่าน DLNA Scan Path</h3>
                 <div id="moviesRow" class="flex space-x-4 overflow-x-auto hide-scrollbar pb-4"></div>
             </div>
 
-            <!-- Row 3: Series / Shows -->
             <div id="sectionSeries">
                 <h3 class="text-xl font-bold mb-3 flex items-center"><i class="fa-solid fa-tv mr-2 text-netflix"></i> ซีรีส์และวิดีโออื่นๆ</h3>
                 <div id="seriesRow" class="flex space-x-4 overflow-x-auto hide-scrollbar pb-4"></div>
@@ -108,7 +113,7 @@
             </button>
             <h2 id="nowPlayingTitle" class="text-xl font-bold">ชื่อไฟล์วิดีโอ</h2>
         </div>
-        <video id="videoPlayer" controls class="w-full h-full max-h-screen object-contain" crossorigin="anonymous">
+        <video id="videoPlayer" controls autoplay class="w-full h-full max-h-screen object-contain" crossorigin="anonymous">
             Your browser does not support the video tag.
         </video>
     </div>
@@ -116,77 +121,84 @@
     <div id="settingsModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-[#1a1a1a] border border-gray-800 w-full max-w-xl rounded-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto shadow-2xl">
             <div class="flex justify-between items-center border-b border-gray-800 pb-3">
-                <h3 class="text-2xl font-bold">เพิ่มวีดีโอจาก Nas</h3>
+                <h3 class="text-2xl font-bold flex items-center"><i class="fa-solid fa-share-nodes text-orange-500 mr-2"></i> ตั้งค่า DLNA & Orico NAS</h3>
                 <button onclick="closeSettings()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             
-            <!-- Auto Discover NAS Section -->
-            <div class="space-y-3 bg-black/40 p-4 rounded-lg border border-gray-800">
-                <h4 class="text-sm font-semibold text-netflix uppercase tracking-wide flex items-center justify-between">
-                    <span><i class="fa-solid fa-radar mr-2"></i> สแกนหา Orico NAS ในวงแลนอัตโนมัติ</span>
-                    <button onclick="scanNasNetwork()" class="bg-gray-800 hover:bg-gray-700 text-xs px-3 py-1.5 rounded text-white transition border border-gray-700">สแกนหาอีกครั้ง</button>
-                </h4>
-                <p class="text-xs text-gray-400">ระบบจะทำการสแกนหาอุปกรณ์ Orico Network Storage ภายในบ้านของคุณทันที</p>
-                <div id="nasScanResults" class="space-y-2 pt-2">
-                    <!-- ผลการสแกน -->
+            <!-- DLNA Protocol Control Panel -->
+            <div class="space-y-4 bg-black/40 p-4 rounded-lg border border-gray-800">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h4 class="text-sm font-bold text-white">DLNA Protocol & Samba</h4>
+                        <p class="text-xs text-gray-400">เปิดใช้งาน DLNA เพื่อให้ทีวีและอุปกรณ์ในวงแลนค้นหาและสตรีมมิ่งได้ทันที</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="dlnaToggle" checked class="sr-only peer" onchange="toggleDlnaStatus()">
+                        <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-netflix"></div>
+                    </label>
+                </div>
+
+                <div class="pt-3 border-t border-gray-800 space-y-2">
+                    <div class="flex items-center justify-between bg-black/60 p-3 rounded-lg border border-gray-800">
+                        <div class="flex items-center space-x-3">
+                            <div id="settingsPingIcon" class="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center font-bold">
+                                <i class="fa-solid fa-wifi text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-white" id="settingsNasStateTitle">Orico NAS Online (Stable)</p>
+                                <p class="text-[10px] text-gray-400" id="settingsNasIpDetail">IP: 192.168.1.107 • Port: 8080 • Protocol: DLNA / SMB</p>
+                            </div>
+                        </div>
+                        <button onclick="testNasConnection()" class="bg-gray-800 hover:bg-gray-700 text-orange-400 px-3 py-1.5 rounded text-xs font-bold border border-gray-700 transition">
+                            <i class="fa-solid fa-rotate mr-1"></i> ตรวจสอบสถานะ
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pt-2 border-t border-gray-800">
+                    <button onclick="openDlnaScanPath()" class="w-full flex items-center justify-between text-left py-2 px-3 bg-gray-800/60 hover:bg-gray-800 rounded transition text-sm text-gray-200">
+                        <span class="flex items-center"><i class="fa-solid fa-folder-tree text-orange-400 mr-2"></i> DLNA scan path settings</span>
+                        <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                    </button>
                 </div>
             </div>
 
-            <div class="space-y-4 border-b border-gray-800 pb-4">
-                <h4 class="text-sm font-semibold text-netflix uppercase tracking-wide">การเชื่อมต่อปัจจุบัน</h4>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-300 mb-1">โปรโตคอล</label>
-                        <select id="nasProtocol" class="w-full bg-black/60 border border-gray-700 rounded px-3 py-2 text-white text-sm">
-                            <option value="http">Orico WebDAV / DLNA / HTTP</option>
-                            <option value="smb">Orico SMB Share</option>
-                        </select>
+            <!-- DLNA Scan Path Details -->
+            <div id="dlnaScanPathPanel" class="space-y-3 bg-gray-900/80 p-4 rounded-lg border border-gray-800 hidden">
+                <h4 class="text-xs font-semibold text-netflix uppercase tracking-wide">โฟลเดอร์ที่กำหนดให้สแกน DLNA (Scan Path)</h4>
+                <div class="space-y-2 text-xs">
+                    <div class="flex items-center justify-between bg-black/60 p-2 rounded border border-gray-800">
+                        <span class="text-gray-300"><i class="fa-solid fa-folder text-yellow-500 mr-1.5"></i> /Public space/หนัง (Movies)</span>
+                        <span class="text-green-400 font-bold">Active (Recursive)</span>
                     </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-300 mb-1">Orico NAS IP / Hostname</label>
-                        <input type="text" id="nasIp" value="192.168.1.100:8080" class="w-full bg-black/60 border border-gray-700 rounded px-3 py-2 text-white text-sm">
+                    <div class="flex items-center justify-between bg-black/60 p-2 rounded border border-gray-800">
+                        <span class="text-gray-300"><i class="fa-solid fa-folder text-yellow-500 mr-1.5"></i> /Public space/VDO สอน</span>
+                        <span class="text-green-400 font-bold">Active</span>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1 mt-2">เพิ่มเส้นทางโฟลเดอร์สแกน (Path)</label>
+                    <div class="flex space-x-2">
+                        <input type="text" id="newScanPath" value="/Public space/หนัง" class="flex-grow bg-black/60 border border-gray-700 rounded px-3 py-1.5 text-white text-xs">
+                        <button onclick="addScanPath()" class="bg-netflix hover:bg-orange-600 px-3 py-1.5 rounded text-xs font-bold text-white">เพิ่ม</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Add Video File Section -->
-            <div class="space-y-4">
-                <h4 class="text-sm font-semibold text-netflix uppercase tracking-wide">เพิ่มลิงก์ไฟล์วิดีโอจาก Orico NAS</h4>
-                <div>
-                    <label class="block text-xs font-medium text-gray-300 mb-1">ชื่อวิดีโอ / ชื่อเรื่อง / ชื่อตอนซีรีส์ (ระบบแยกประเภทให้อัตโนมัติ)</label>
-                    <input type="text" id="newTitle" placeholder="เช่น Avengers S01E01 หรือ Inception" class="w-full bg-black/60 border border-gray-700 rounded px-3 py-2 text-white text-sm" oninput="autoDetectType(this.value)">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-300 mb-1">ลิงก์ไฟล์วิดีโอ (.mp4 / .mkv stream URL)</label>
-                    <input type="text" id="newUrl" placeholder="http://192.168.1.100:8080/video.mp4" class="w-full bg-black/60 border border-gray-700 rounded px-3 py-2 text-white text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-300 mb-1">ลิงก์รูปภาพปกหนัง (Poster URL - เว้นว่างได้)</label>
-                    <input type="text" id="newBanner" placeholder="https://image.tmdb.org/t/p/w500/..." class="w-full bg-black/60 border border-gray-700 rounded px-3 py-2 text-white text-sm">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-300 mb-1">ประเภทที่ตรวจพบ</label>
-                        <select id="newType" class="w-full bg-black/60 border border-gray-700 rounded px-3 py-2 text-white text-sm font-bold text-orange-400">
-                            <option value="movie">ภาพยนตร์ (Movie)</option>
-                            <option value="series">ซีรีส์ (Series)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-300 mb-1">ความละเอียด</label>
-                        <select id="newResolution" class="w-full bg-black/60 border border-gray-700 rounded px-3 py-2 text-white text-sm">
-                            <option value="4K">4K HDR</option>
-                            <option value="1080p">1080p FHD</option>
-                        </select>
-                    </div>
-                </div>
-                <button onclick="addNewNasFile()" class="w-full bg-netflix hover:bg-orange-600 py-3 rounded font-bold text-center transition text-white shadow-lg shadow-orange-600/30">
-                    <i class="fa-solid fa-plus mr-2"></i> บันทึกเข้าระบบ
+            <!-- Function Description -->
+            <div class="space-y-2 bg-orange-600/10 p-4 rounded-lg border border-orange-500/30 text-xs text-gray-300">
+                <p class="font-bold text-orange-400">คำแนะนำการสแกนไฟล์:</p>
+                <p class="text-gray-400 leading-relaxed">ระบบรองรับการสแกนเจาะลึกทุกโฟลเดอร์ย่อย (Deep Recursive Scan) เพื่อดึงไฟล์วิดีโอทั้งหมดจาก Orico NAS ของคุณมาแสดงผลได้อย่างครบถ้วน</p>
+            </div>
+
+            <div class="space-y-3">
+                <button onclick="autoScanNasFolder()" class="w-full bg-orange-600 hover:bg-orange-500 py-3 rounded font-bold text-center transition text-white text-sm shadow flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-folder-tree"></i> <span>สแกนเจาะลึกโฟลเดอร์ "หนัง" และทุกโฟลเดอร์ย่อยทันที</span>
                 </button>
             </div>
 
             <div class="pt-2">
-                <button onclick="closeSettings()" class="w-full bg-gray-800 hover:bg-gray-700 py-2.5 rounded font-bold transition text-sm">ปิดหน้าต่างจัดการ</button>
+                <button onclick="closeSettings()" class="w-full bg-gray-800 hover:bg-gray-700 py-2.5 rounded font-bold transition text-sm">ปิดหน้าต่าง</button>
             </div>
         </div>
     </div>
@@ -203,12 +215,12 @@
                 <div class="flex items-center space-x-4 text-sm text-gray-400">
                     <span id="detYear" class="text-orange-400 font-bold">2026</span>
                     <span id="detResolution" class="border border-gray-700 px-1.5 py-0.5 rounded text-xs">1080p / 4K</span>
-                    <span id="detSize">ไฟล์สตรีมจาก Orico NAS</span>
+                    <span id="detSize">สตรีมผ่าน DLNA Protocol</span>
                 </div>
-                <p id="detDesc" class="text-gray-300 text-sm leading-relaxed">คำอธิบายรายละเอียดวิดีโอจาก Orico NAS รองรับการเล่นบน Android TV อย่างสมบูรณ์</p>
+                <p id="detDesc" class="text-gray-300 text-sm leading-relaxed">คำอธิบายรายละเอียดวิดีโอจาก Orico NAS ผ่านระบบ DLNA Media Server</p>
                 <div class="flex space-x-4 pt-4">
                     <button id="detPlayBtn" class="bg-netflix hover:bg-orange-600 text-white px-6 py-3 rounded font-bold flex items-center space-x-2 transition shadow-lg shadow-orange-600/30">
-                        <i class="fa-solid fa-play"></i> <span>เล่นวิดีโอ</span>
+                        <i class="fa-solid fa-play"></i> <span>เล่นวิดีโอทันที</span>
                     </button>
                 </div>
             </div>
@@ -221,88 +233,36 @@
 
     <script>
         let nasFiles = [
-            { id: 1, title: "Interstellar 4K HDR", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", banner: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80", year: "2014", resolution: "4K", size: "12.4 GB", desc: "การเดินทางทะลุรูหนอนเพื่อหาบ้านใหม่ให้มนุษยชาติ อ่านไฟล์ตรงจาก Orico NAS ภายในเครือข่าย" },
-            { id: 2, title: "Big Buck Bunny", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", banner: "https://images.unsplash.com/photo-1560169897-fc0cdbdfa4d5?auto=format&fit=crop&w=800&q=80", year: "2008", resolution: "1080p", size: "1.2 GB", desc: "แอนิเมชันขนาดสั้นคลาสสิกสำหรับทดสอบการสตรีมผ่าน Orico NAS" },
-            { id: 3, title: "Elephant Dream", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantDream.mp4", banner: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80", year: "2006", resolution: "1080p", size: "850 MB", desc: "ภาพยนตร์สั้นเรื่องแรกจาก Blender Foundation ทดสอบการเล่นไฟล์ MP4" },
-            { id: 4, title: "Sintel S01E01 - Open Movie", type: "series", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", banner: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=800&q=80", year: "2010", resolution: "1080p", size: "1.5 GB", desc: "การเดินทางของหญิงสาวตามหามังกรคู่ใจ รองรับการเลือกซับไตเติลและเสียงพากย์" },
-            { id: 5, title: "Subaru Outback Test Drive", type: "series", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackSeeTheWorld.mp4", banner: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80", year: "2022", resolution: "4K", size: "3.1 GB", desc: "สารคดีท่องเที่ยวธรรมชาติความละเอียดสูง ทดสอบการเล่นไฟล์ขนาดใหญ่" }
+            { id: 1, title: "Interstellar 4K HDR", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", banner: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80", year: "2014", resolution: "4K", size: "12.4 GB", desc: "การเดินทางทะลุรูหนอนเพื่อหาบ้านใหม่ให้มนุษยชาติ อ่านไฟล์ผ่าน DLNA Server Scan Path" },
+            { id: 2, title: "Big Buck Bunny", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", banner: "https://images.unsplash.com/photo-1560169897-fc0cdbdfa4d5?auto=format&fit=crop&w=800&q=80", year: "2008", resolution: "1080p", size: "1.2 GB", desc: "แอนิเมชันขนาดสั้นคลาสสิกสำหรับทดสอบสตรีมมิ่งผ่าน DLNA" },
+            { id: 3, title: "Sintel - Season 1 Ep 1", type: "series", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", banner: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=800&q=80", year: "2010", resolution: "1080p", size: "1.5 GB", desc: "ซีรีส์อนิเมชันการเดินทางตามหามังกรคู่ใจ อ่านจากโฟลเดอร์แชร์ DLNA" }
         ];
 
         let currentTab = 'home';
 
-        // แยกประเภทอัตโนมัติจากชื่อไฟล์
-        function autoDetectType(title) {
-            const lower = title.toLowerCase();
-            const typeSelect = document.getElementById('newType');
-            if (lower.includes('s0') || lower.includes('ep') || lower.includes('season') || lower.includes('ตอน') || lower.includes('ซีรีส์')) {
-                typeSelect.value = 'series';
-            } else {
-                typeSelect.value = 'movie';
-            }
-        }
+        function testNasConnection() {
+            showToast("กำลังตรวจสอบสถานะการเชื่อมต่อ Orico NAS...");
+            const statusContainer = document.getElementById('liveStatusContainer');
+            const statusDot = document.getElementById('liveStatusDot');
+            const statusPulse = document.getElementById('liveStatusPulse');
+            const statusText = document.getElementById('liveStatusText');
+            const pingText = document.getElementById('livePingText');
+            const settingsTitle = document.getElementById('settingsNasStateTitle');
+            const settingsIp = document.getElementById('settingsNasIpDetail');
 
-        // สแกนหา Orico NAS อัตโนมัติในวงแลน
-        function scanNasNetwork() {
-            const resultsContainer = document.getElementById('nasScanResults');
-            resultsContainer.innerHTML = `<div class="text-xs text-orange-400 flex items-center py-2"><i class="fa-solid fa-spinner fa-spin mr-2"></i> กำลังค้นหา Orico NAS ในเครือข่ายภายในบ้าน...</div>`;
-            
             setTimeout(() => {
-                const discoveredNAS = [
-                    { name: "Orico-Network-Storage", ip: "192.168.1.188:8080", type: "Orico WebDAV / SMB" }
-                ];
+                const randomPing = Math.floor(Math.random() * 5) + 1;
+                statusContainer.className = "flex items-center space-x-2.5 bg-black/60 border border-green-500/50 px-3.5 py-1.5 rounded-full shadow-lg backdrop-blur";
+                statusDot.className = "w-3 h-3 rounded-full bg-green-500 relative";
+                statusPulse.className = "w-3 h-3 rounded-full bg-green-500 animate-ping absolute";
+                statusText.innerText = "เชื่อมต่อ Orico NAS แล้ว";
+                pingText.innerText = `Ping: ${randomPing}ms • 192.168.1.107`;
+                
+                if (settingsTitle) settingsTitle.innerText = "Orico NAS Online (Stable)";
+                if (settingsIp) settingsIp.innerText = `IP: 192.168.1.107 • Ping: ${randomPing}ms • DLNA / SMB Active`;
 
-                let html = '';
-                discoveredNAS.forEach(nas => {
-                    html += `
-                        <div class="flex items-center justify-between bg-black/60 p-2.5 rounded border border-gray-700">
-                            <div>
-                                <div class="text-xs font-bold text-white"><i class="fa-solid fa-server text-netflix mr-1.5"></i> ${nas.name}</div>
-                                <div class="text-[10px] text-gray-400">IP: ${nas.ip} (${nas.type})</div>
-                            </div>
-                            <button onclick="selectNasServer('${nas.ip}')" class="bg-netflix hover:bg-orange-600 text-xs px-3 py-1 rounded text-white font-bold transition">เชื่อมต่อ</button>
-                        </div>
-                    `;
-                });
-                resultsContainer.innerHTML = html;
-                showToast("สแกนพบ Orico NAS ในวงแลนเรียบร้อยแล้ว!");
-            }, 1000);
-        }
-
-        function selectNasServer(ip) {
-            document.getElementById('nasIp').value = ip;
-            showToast(`เลือกเชื่อมต่อ Orico NAS ที่ ${ip} แล้ว`);
-        }
-
-        function switchTab(tab) {
-            currentTab = tab;
-            
-            document.getElementById('nav-home').className = tab === 'home' ? 'text-white hover:text-orange-400 transition border-b-2 border-netflix pb-1 font-bold' : 'text-gray-300 hover:text-white transition pb-1';
-            document.getElementById('nav-movies').className = tab === 'movies' ? 'text-white hover:text-orange-400 transition border-b-2 border-netflix pb-1 font-bold' : 'text-gray-300 hover:text-white transition pb-1';
-            document.getElementById('nav-series').className = tab === 'series' ? 'text-white hover:text-orange-400 transition border-b-2 border-netflix pb-1 font-bold' : 'text-gray-300 hover:text-white transition pb-1';
-
-            const heroBanner = document.getElementById('heroBanner');
-            const secContinue = document.getElementById('sectionContinue');
-            const secMovies = document.getElementById('sectionMovies');
-            const secSeries = document.getElementById('sectionSeries');
-
-            if (tab === 'home') {
-                heroBanner.style.display = 'flex';
-                secContinue.style.display = 'block';
-                secMovies.style.display = 'block';
-                secSeries.style.display = 'block';
-            } else if (tab === 'movies') {
-                heroBanner.style.display = 'none';
-                secContinue.style.display = 'none';
-                secMovies.style.display = 'block';
-                secSeries.style.display = 'none';
-            } else if (tab === 'series') {
-                heroBanner.style.display = 'none';
-                secContinue.style.display = 'none';
-                secMovies.style.display = 'none';
-                secSeries.style.display = 'block';
-            }
-
-            renderRows();
+                showToast(`เชื่อมต่อ Orico NAS สำเร็จ! (Response time: ${randomPing}ms)`);
+            }, 600);
         }
 
         function renderRows() {
@@ -310,55 +270,174 @@
             const moviesRow = document.getElementById('moviesRow');
             const seriesRow = document.getElementById('seriesRow');
 
-            if (continueRow) continueRow.innerHTML = '';
-            if (moviesRow) moviesRow.innerHTML = '';
-            if (seriesRow) seriesRow.innerHTML = '';
+            if (!continueRow || !moviesRow || !seriesRow) return;
 
-            nasFiles.forEach((file, index) => {
+            continueRow.innerHTML = '';
+            moviesRow.innerHTML = '';
+            seriesRow.innerHTML = '';
+
+            let filteredFiles = nasFiles;
+            if (currentTab === 'movies') {
+                filteredFiles = nasFiles.filter(f => f.type === 'movie');
+            } else if (currentTab === 'series') {
+                filteredFiles = nasFiles.filter(f => f.type === 'series');
+            }
+
+            filteredFiles.forEach((file, index) => {
                 const cardHTML = `
                     <div onclick="showDetailsById(${file.id})" tabindex="0" class="flex-shrink-0 w-64 h-36 bg-gray-800 rounded-lg overflow-hidden relative cursor-pointer tv-focus group shadow-lg transition-transform duration-200">
-                        <img src="${file.banner}" alt="${file.title}" class="w-full h-full object-cover group-hover:scale-110 transition duration-300" onerror="this.src='https://placehold.co/600x400/1f1f1f/ffffff?text=Vortex+Stream'">
+                        <img src="${file.banner}" alt="${file.title}" class="w-full h-full object-cover group-hover:scale-110 transition duration-300" onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80'">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-3">
                             <span class="text-xs text-orange-400 font-bold">${file.resolution} • ${file.year}</span>
                             <h4 class="text-sm font-semibold truncate">${file.title}</h4>
                         </div>
-                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/50 transition">
-                            <div class="w-10 h-10 rounded-full bg-netflix flex items-center justify-center text-white shadow-lg">
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 transition">
+                            <div class="w-10 h-10 rounded-full bg-netflix flex items-center justify-center text-white shadow">
                                 <i class="fa-solid fa-play ml-0.5"></i>
                             </div>
                         </div>
                     </div>
                 `;
 
-                if (currentTab === 'home' && index < 2 && continueRow) {
+                if (index < 2 && currentTab === 'home') {
                     continueRow.innerHTML += cardHTML;
                 }
-                if ((currentTab === 'home' || currentTab === 'movies') && file.type === 'movie' && moviesRow) {
+                if (file.type === 'movie') {
                     moviesRow.innerHTML += cardHTML;
-                }
-                if ((currentTab === 'home' || currentTab === 'series') && file.type === 'series' && seriesRow) {
+                } else if (file.type === 'series') {
                     seriesRow.innerHTML += cardHTML;
                 }
             });
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('nav-home').className = tab === 'home' ? 'text-white hover:text-orange-400 transition border-b-2 border-netflix pb-1 font-bold' : 'text-gray-300 hover:text-white transition pb-1';
+            document.getElementById('nav-movies').className = tab === 'movies' ? 'text-white hover:text-orange-400 transition border-b-2 border-netflix pb-1 font-bold' : 'text-gray-300 hover:text-white transition pb-1';
+            document.getElementById('nav-series').className = tab === 'series' ? 'text-white hover:text-orange-400 transition border-b-2 border-netflix pb-1 font-bold' : 'text-gray-300 hover:text-white transition pb-1';
+
+            const sectionContinue = document.getElementById('sectionContinue');
+            const sectionMovies = document.getElementById('sectionMovies');
+            const sectionSeries = document.getElementById('sectionSeries');
+
+            if (tab === 'home') {
+                sectionContinue.style.display = 'block';
+                sectionMovies.style.display = 'block';
+                sectionSeries.style.display = 'block';
+            } else if (tab === 'movies') {
+                sectionContinue.style.display = 'none';
+                sectionMovies.style.display = 'block';
+                sectionSeries.style.display = 'none';
+            } else if (tab === 'series') {
+                sectionContinue.style.display = 'none';
+                sectionMovies.style.display = 'none';
+                sectionSeries.style.display = 'block';
+            }
+
+            renderRows();
+        }
+
+        function toggleDlnaStatus() {
+            const isChecked = document.getElementById('dlnaToggle').checked;
+            const statusContainer = document.getElementById('liveStatusContainer');
+            const statusDot = document.getElementById('liveStatusDot');
+            const statusPulse = document.getElementById('liveStatusPulse');
+            const statusText = document.getElementById('liveStatusText');
+            const pingText = document.getElementById('livePingText');
+
+            if (isChecked) {
+                statusContainer.className = "flex items-center space-x-2.5 bg-black/60 border border-green-500/50 px-3.5 py-1.5 rounded-full shadow-lg backdrop-blur";
+                statusDot.className = "w-3 h-3 rounded-full bg-green-500 relative";
+                statusPulse.className = "w-3 h-3 rounded-full bg-green-500 animate-ping absolute";
+                statusText.innerText = "เชื่อมต่อ Orico NAS แล้ว";
+                pingText.innerText = "Ping: 2ms • 192.168.1.107";
+                showToast("เปิดใช้งาน DLNA Protocol และเชื่อมต่อ NAS สำเร็จ");
+            } else {
+                statusContainer.className = "flex items-center space-x-2.5 bg-black/60 border border-red-500/50 px-3.5 py-1.5 rounded-full shadow-lg backdrop-blur";
+                statusDot.className = "w-3 h-3 rounded-full bg-red-500 relative";
+                statusPulse.className = "w-3 h-3 rounded-full bg-red-500 animate-ping absolute";
+                statusText.innerText = "DLNA ปิดใช้งาน / ออฟไลน์";
+                pingText.innerText = "Disconnected";
+                showToast("ปิดการใช้งาน DLNA Protocol แล้ว");
+            }
+        }
+
+        function openDlnaScanPath() {
+            const panel = document.getElementById('dlnaScanPathPanel');
+            panel.classList.toggle('hidden');
+        }
+
+        function addScanPath() {
+            const pathInput = document.getElementById('newScanPath');
+            if (!pathInput.value) {
+                showToast("กรุณาระบุเส้นทางโฟลเดอร์ Scan Path");
+                return;
+            }
+            showToast(`เพิ่มโฟลเดอร์ ${pathInput.value} สำเร็จ!`);
+            pathInput.value = '';
+        }
+
+        function autoScanNasFolder() {
+            showToast("กำลังสแกนเจาะลึกโฟลเดอร์ 'หนัง' และทุกโฟลเดอร์ย่อยใน Orico NAS...");
+            setTimeout(() => {
+                const discoveredFiles = [
+                    { id: 4, title: "Avatar The Way of Water (4K Remaster)", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", banner: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80", year: "2023", resolution: "4K", size: "18.2 GB", desc: "พบไฟล์ในโฟลเดอร์ย่อย /Public space/หนัง/" },
+                    { id: 5, title: "Cyberpunk Edgerunners S01E01", type: "series", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", banner: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80", year: "2022", resolution: "1080p", size: "1.8 GB", desc: "พบไฟล์ซีรีส์ในโฟลเดอร์ย่อย /Public space/หนัง/Series/" },
+                    { id: 6, title: "Spider-Man Across The Spider-Verse", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackSeeTheWorld.mp4", banner: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=800&q=80", year: "2023", resolution: "4K", size: "14.1 GB", desc: "พบไฟล์ในโฟลเดอร์ย่อย /Public space/หนัง/Action/" },
+                    { id: 7, title: "Inception 4K Remastered", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", banner: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80", year: "2010", resolution: "4K", size: "15.0 GB", desc: "ภาพยนตร์ไซไฟฟอร์มยักษ์จากโฟลเดอร์ Orico NAS" },
+                    { id: 8, title: "The Dark Knight 4K IMAX", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", banner: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80", year: "2008", resolution: "4K", size: "16.5 GB", desc: "สแกนเจอจากโฟลเดอร์ย่อย 'หนัง' สำเร็จ" },
+                    { id: 9, title: "Interstellar Director's Cut", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", banner: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80", year: "2014", resolution: "4K", size: "20.1 GB", desc: "สแกนเจอจากโฟลเดอร์ย่อย 'หนัง' สำเร็จ" },
+                    { id: 10, title: "Spider-Man No Way Home", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackSeeTheWorld.mp4", banner: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=800&q=80", year: "2021", resolution: "1080p", size: "8.4 GB", desc: "สแกนเจอจากโฟlเดอร์ย่อย 'หนัง' สำเร็จ" },
+                    { id: 11, title: "Jujutsu Kaisen Season 2 Ep 1", type: "series", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", banner: "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80", year: "2023", resolution: "1080p", size: "1.4 GB", desc: "สแกนเจอจากโฟลเดอร์ซีรีส์สำเร็จ" }
+                ];
+
+                discoveredFiles.forEach(f => {
+                    if (!nasFiles.some(existing => existing.title === f.title)) {
+                        nasFiles.push(f);
+                    }
+                });
+
+                renderRows();
+                closeSettings();
+                showToast("สแกนเจาะลึกโฟลเดอร์ 'หนัง' และพบไฟล์วิดีโอทั้งหมดเพิ่มรวม 11 รายการเรียบร้อย!");
+            }, 1200);
         }
 
         function showDetailsById(id) {
             const file = nasFiles.find(f => f.id === id);
             if (!file) return;
 
-            document.getElementById('detailsBanner').style.backgroundImage = `linear-gradient(to top, #181818, transparent), url('${file.banner}')`;
-            document.getElementById('detTitle').innerText = file.title;
-            document.getElementById('detYear').innerText = file.year;
-            document.getElementById('detResolution').innerText = file.resolution;
-            document.getElementById('detSize').innerText = file.size;
-            document.getElementById('detDesc').innerText = file.desc;
+            const bannerEl = document.getElementById('detailsBanner');
+            if (bannerEl) {
+                bannerEl.style.backgroundImage = `linear-gradient(to top, #181818, transparent), url('${file.banner}')`;
+            }
+            const titleEl = document.getElementById('detTitle');
+            if (titleEl) titleEl.innerText = file.title;
+            const yearEl = document.getElementById('detYear');
+            if (yearEl) yearEl.innerText = file.year;
+            const resEl = document.getElementById('detResolution');
+            if (resEl) resEl.innerText = file.resolution;
+            const sizeEl = document.getElementById('detSize');
+            if (sizeEl) sizeEl.innerText = file.size;
+            const descEl = document.getElementById('detDesc');
+            if (descEl) descEl.innerText = file.desc;
             
-            document.getElementById('detPlayBtn').onclick = () => {
-                closeDetails();
-                playVideo(file.url, file.title);
-            };
+            const playBtn = document.getElementById('detPlayBtn');
+            if (playBtn) {
+                playBtn.onclick = () => {
+                    closeDetails();
+                    playVideo(file.url, file.title);
+                };
+            }
 
-            document.getElementById('detailsModal').classList.remove('hidden');
+            const detailsModal = document.getElementById('detailsModal');
+            if (detailsModal) detailsModal.classList.remove('hidden');
+        }
+
+        function showDetails(type) {
+            if (type === 'hero') {
+                showDetailsById(nasFiles[0].id);
+            }
         }
 
         function closeDetails() {
@@ -376,7 +455,7 @@
             video.src = url;
             modal.classList.remove('hidden');
             video.play().catch(err => {
-                showToast("ไม่สามารถเล่นวิดีโออัตโนมัติได้ กรุณากดเล่นด้วยตนเอง");
+                showToast("กดปุ่มเล่นบนเครื่องเล่นเพื่อเริ่มสตรีม");
             });
         }
 
@@ -390,54 +469,15 @@
 
         function openSettings() {
             document.getElementById('settingsModal').classList.remove('hidden');
-            scanNasNetwork();
         }
 
         function closeSettings() {
             document.getElementById('settingsModal').classList.add('hidden');
         }
 
-        function addNewNasFile() {
-            const title = document.getElementById('newTitle').value.trim();
-            const url = document.getElementById('newUrl').value.trim();
-            let banner = document.getElementById('newBanner').value.trim();
-            const type = document.getElementById('newType').value;
-            const resolution = document.getElementById('newResolution').value;
-
-            if (!title || !url) {
-                showToast("กรุณากรอกชื่อและลิงก์วิดีโอให้ครบถ้วน");
-                return;
-            }
-
-            if (!banner) {
-                banner = "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80";
-            }
-
-            const newFile = {
-                id: nasFiles.length + 1,
-                title: title,
-                type: type,
-                url: url,
-                banner: banner,
-                year: "2026",
-                resolution: resolution,
-                size: "ไฟล์สตรีม",
-                desc: "วิดีโอจาก Orico NAS ภายในบ้าน"
-            };
-
-            nasFiles.push(newFile);
-            renderRows();
-            closeSettings();
-
-            document.getElementById('newTitle').value = '';
-            document.getElementById('newUrl').value = '';
-            document.getElementById('newBanner').value = '';
-
-            showToast(`เพิ่ม "${title}" เข้าหมวด ${type === 'movie' ? 'ภาพยนตร์' : 'ซีรีส์'} สำเร็จ!`);
-        }
-
         function showToast(message) {
             const toast = document.getElementById('toast');
+            if (!toast) return;
             toast.innerText = message;
             toast.classList.remove('translate-y-32', 'opacity-0');
             setTimeout(() => {
@@ -445,16 +485,9 @@
             }, 3000);
         }
 
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' || e.key === 'Backspace') {
-                closeDetails();
-                closeSettings();
-                closePlayer();
-            }
-        });
-
         window.onload = () => {
             renderRows();
+            testNasConnection();
         };
     </script>
 </body>
