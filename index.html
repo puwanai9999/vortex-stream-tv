@@ -3,531 +3,374 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vortex Stream - NAS Media Hub TV</title>
-    <script type="text/javascript" src="https://gc.kes.v2.scr.kaspersky-labs.com/7EA5E9BB-55E1-4C31-9C21-4943DDFED2E4/main.js?attr=pru7o8NG4yDV8o5Ec6nzh6SJVGVow7dvnpdd9xFS-tOb_35WI-pSuOzNcBtqNsGwXwmOvvKdV3LjyN1s50ZH5-A7xlRs3jYDMWOxXTZcF13fyh2nNZItjvMQuWva3hLRjd5gbBDAN54GvJ7UdcFXIxGuxBg7KLYATrjvkitGm9Yoe2QljOs8i5vCT_IR3-Hd0911TnG8-mZ_FaBEdmz4b036QoT1Inp7Pk3O3XUKTL4ZxZ0W9ui-_j0jyoC6YUy1qL4uMBY7MjHCa7KiMnlTPFF0uV-53czJN_k3DqrIz-jPt3Z1A6ZKRX_IUqC5JUeO_tAcG1LvXuXEp7Yw0dQ3iA" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        netflix: '#FF6600',
-                        darkBg: '#111111',
-                    }
-                }
-            }
-        }
-    </script>
+    <title>Vortex Stream - NAS FTP/Explorer Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            background-color: #111111;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden;
-        }
-        .focus-ring:focus, .tv-focus:focus {
-            outline: 3px solid #FF6600;
-            outline-offset: 2px;
-            transform: scale(1.05);
-            transition: transform 0.2s ease;
-        }
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
-</head>
-<body class="bg-darkBg min-h-screen flex flex-col">
-
-    <header class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/90 to-transparent px-8 py-4 flex items-center justify-between">
-        <div class="flex items-center space-x-8">
-            <h1 class="text-netflix font-extrabold text-3xl tracking-wider cursor-pointer" onclick="switchTab('home')">VORTEX<span class="text-white">STREAM</span></h1>
-            <nav class="hidden md:flex space-x-6 text-sm font-medium">
-                <a href="#" id="nav-home" class="text-white hover:text-orange-400 transition border-b-2 border-netflix pb-1 font-bold" onclick="switchTab('home')">หน้าแรก</a>
-                <a href="#" id="nav-movies" class="text-gray-300 hover:text-white transition pb-1" onclick="switchTab('movies')">ภาพยนตร์</a>
-                <a href="#" id="nav-series" class="text-gray-300 hover:text-white transition pb-1" onclick="switchTab('series')">ซีรีส์</a>
-            </nav>
-        </div>
-        <div class="flex items-center space-x-4">
-            <div id="liveStatusContainer" class="flex items-center space-x-2.5 bg-black/60 border border-green-500/50 px-3.5 py-1.5 rounded-full shadow-lg backdrop-blur">
-                <div class="relative flex items-center justify-center">
-                    <span id="liveStatusPulse" class="w-3 h-3 rounded-full bg-green-500 animate-ping absolute"></span>
-                    <span id="liveStatusDot" class="w-3 h-3 rounded-full bg-green-500 relative"></span>
-                </div>
-                <div class="flex flex-col text-left">
-                    <span id="liveStatusText" class="text-xs font-bold text-green-400 tracking-wide">เชื่อมต่อ Orico NAS แล้ว</span>
-                    <span id="livePingText" class="text-[9px] text-gray-400">Ping: 2ms • 192.168.1.107</span>
-                </div>
-            </div>
-            <button onclick="openSettings()" class="bg-gray-800/80 hover:bg-gray-700 px-4 py-2 rounded-md text-sm font-medium transition tv-focus flex items-center space-x-2">
-                <i class="fa-solid fa-server text-netflix"></i> <span>ตั้งค่า DLNA & Orico NAS</span>
-            </button>
-            <div class="w-10 h-10 rounded bg-netflix flex items-center justify-center font-bold text-white shadow-lg shadow-orange-600/30">TV</div>
-        </div>
-    </header>
-
-    <main class="flex-grow pt-20 pb-16">
-        <!-- Hero Banner -->
-        <section id="heroBanner" class="relative h-[60vh] w-full bg-cover bg-center flex items-end p-8 md:p-16" style="background-image: linear-gradient(to top, #111111, rgba(17,17,17,0.4), transparent), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1920&q=80')">
-            <div class="max-w-xl space-y-4">
-                <span class="bg-netflix text-xs uppercase px-2.5 py-1 rounded font-bold text-white shadow">DLNA Media Server Active</span>
-                <h2 id="heroTitle" class="text-4xl md:text-5xl font-extrabold drop-shadow-lg">Interstellar 4K HDR</h2>
-                <p id="heroDesc" class="text-gray-300 text-sm md:text-base line-clamp-3">สตรีมมิ่งผ่าน DLNA Protocol จาก Orico NAS ภายในวงแลนบ้านของคุณ รองรับการเล่นไฟล์ลื่นไหล</p>
-                <div class="flex space-x-4 pt-2">
-                    <button onclick="playHeroMedia()" class="bg-white text-black hover:bg-gray-200 px-6 py-3 rounded font-bold flex items-center space-x-2 transition tv-focus shadow-lg">
-                        <i class="fa-solid fa-play text-netflix"></i> <span>เล่นทันที</span>
-                    </button>
-                    <button onclick="showDetails('hero')" class="bg-gray-700/80 hover:bg-gray-600 text-white px-6 py-3 rounded font-bold flex items-center space-x-2 transition tv-focus">
-                        <i class="fa-solid fa-circle-info"></i> <span>รายละเอียด</span>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <div id="contentArea" class="space-y-8 mt-6 px-4 md:px-12">
-            <div id="sectionContinue">
-                <h3 class="text-xl font-bold mb-3 flex items-center"><i class="fa-solid fa-clock-rotate-left mr-2 text-netflix"></i> รับชมต่อให้จบ</h3>
-                <div id="continueRow" class="flex space-x-4 overflow-x-auto hide-scrollbar pb-4"></div>
-            </div>
-
-            <div id="sectionMovies">
-                <h3 class="text-xl font-bold mb-3 flex items-center"><i class="fa-solid fa-film mr-2 text-netflix"></i> ภาพยนตร์ผ่าน DLNA Scan Path</h3>
-                <div id="moviesRow" class="flex space-x-4 overflow-x-auto hide-scrollbar pb-4"></div>
-            </div>
-
-            <div id="sectionSeries">
-                <h3 class="text-xl font-bold mb-3 flex items-center"><i class="fa-solid fa-tv mr-2 text-netflix"></i> ซีรีส์และวิดีโออื่นๆ</h3>
-                <div id="seriesRow" class="flex space-x-4 overflow-x-auto hide-scrollbar pb-4"></div>
-            </div>
-        </div>
-    </main>
-
-    <div id="playerModal" class="fixed inset-0 bg-black z-50 hidden flex flex-col items-center justify-center">
-        <div class="absolute top-4 left-4 z-10 flex items-center space-x-4">
-            <button onclick="closePlayer()" class="bg-black/50 hover:bg-white/25 text-white p-3 rounded-full transition tv-focus">
-                <i class="fa-solid fa-arrow-left text-xl"></i>
-            </button>
-            <h2 id="nowPlayingTitle" class="text-xl font-bold">ชื่อไฟล์วิดีโอ</h2>
-        </div>
-        <video id="videoPlayer" controls autoplay class="w-full h-full max-h-screen object-contain" crossorigin="anonymous">
-            Your browser does not support the video tag.
-        </video>
-    </div>
-
-    <div id="settingsModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-[#1a1a1a] border border-gray-800 w-full max-w-xl rounded-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto shadow-2xl">
-            <div class="flex justify-between items-center border-b border-gray-800 pb-3">
-                <h3 class="text-2xl font-bold flex items-center"><i class="fa-solid fa-share-nodes text-orange-500 mr-2"></i> ตั้งค่า DLNA & Orico NAS</h3>
-                <button onclick="closeSettings()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
-            </div>
-            
-            <!-- DLNA Protocol Control Panel -->
-            <div class="space-y-4 bg-black/40 p-4 rounded-lg border border-gray-800">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h4 class="text-sm font-bold text-white">DLNA Protocol & Samba</h4>
-                        <p class="text-xs text-gray-400">เปิดใช้งาน DLNA เพื่อให้ทีวีและอุปกรณ์ในวงแลนค้นหาและสตรีมมิ่งได้ทันที</p>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="dlnaToggle" checked class="sr-only peer" onchange="toggleDlnaStatus()">
-                        <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-netflix"></div>
-                    </label>
-                </div>
-
-                <div class="pt-3 border-t border-gray-800 space-y-2">
-                    <div class="flex items-center justify-between bg-black/60 p-3 rounded-lg border border-gray-800">
-                        <div class="flex items-center space-x-3">
-                            <div id="settingsPingIcon" class="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center font-bold">
-                                <i class="fa-solid fa-wifi text-sm"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold text-white" id="settingsNasStateTitle">Orico NAS Online (Stable)</p>
-                                <p class="text-[10px] text-gray-400" id="settingsNasIpDetail">IP: 192.168.1.107 • Port: 8080 • Protocol: DLNA / SMB</p>
-                            </div>
-                        </div>
-                        <button onclick="testNasConnection()" class="bg-gray-800 hover:bg-gray-700 text-orange-400 px-3 py-1.5 rounded text-xs font-bold border border-gray-700 transition">
-                            <i class="fa-solid fa-rotate mr-1"></i> ตรวจสอบสถานะ
-                        </button>
-                    </div>
-                </div>
-
-                <div class="pt-2 border-t border-gray-800">
-                    <button onclick="openDlnaScanPath()" class="w-full flex items-center justify-between text-left py-2 px-3 bg-gray-800/60 hover:bg-gray-800 rounded transition text-sm text-gray-200">
-                        <span class="flex items-center"><i class="fa-solid fa-folder-tree text-orange-400 mr-2"></i> DLNA scan path settings</span>
-                        <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- DLNA Scan Path Details -->
-            <div id="dlnaScanPathPanel" class="space-y-3 bg-gray-900/80 p-4 rounded-lg border border-gray-800 hidden">
-                <h4 class="text-xs font-semibold text-netflix uppercase tracking-wide">โฟลเดอร์ที่กำหนดให้สแกน DLNA (Scan Path)</h4>
-                <div class="space-y-2 text-xs">
-                    <div class="flex items-center justify-between bg-black/60 p-2 rounded border border-gray-800">
-                        <span class="text-gray-300"><i class="fa-solid fa-folder text-yellow-500 mr-1.5"></i> /Public space/หนัง (Movies)</span>
-                        <span class="text-green-400 font-bold">Active (Recursive)</span>
-                    </div>
-                    <div class="flex items-center justify-between bg-black/60 p-2 rounded border border-gray-800">
-                        <span class="text-gray-300"><i class="fa-solid fa-folder text-yellow-500 mr-1.5"></i> /Public space/VDO สอน</span>
-                        <span class="text-green-400 font-bold">Active</span>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-300 mb-1 mt-2">เพิ่มเส้นทางโฟลเดอร์สแกน (Path)</label>
-                    <div class="flex space-x-2">
-                        <input type="text" id="newScanPath" value="/Public space/หนัง" class="flex-grow bg-black/60 border border-gray-700 rounded px-3 py-1.5 text-white text-xs">
-                        <button onclick="addScanPath()" class="bg-netflix hover:bg-orange-600 px-3 py-1.5 rounded text-xs font-bold text-white">เพิ่ม</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Function Description -->
-            <div class="space-y-2 bg-orange-600/10 p-4 rounded-lg border border-orange-500/30 text-xs text-gray-300">
-                <p class="font-bold text-orange-400">คำแนะนำการสแกนไฟล์:</p>
-                <p class="text-gray-400 leading-relaxed">ระบบรองรับการสแกนเจาะลึกทุกโฟลเดอร์ย่อย (Deep Recursive Scan) เพื่อดึงไฟล์วิดีโอทั้งหมดจาก Orico NAS ของคุณมาแสดงผลได้อย่างครบถ้วน</p>
-            </div>
-
-            <div class="space-y-3">
-                <button onclick="autoScanNasFolder()" class="w-full bg-orange-600 hover:bg-orange-500 py-3 rounded font-bold text-center transition text-white text-sm shadow flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-folder-tree"></i> <span>สแกนเจาะลึกโฟลเดอร์ "หนัง" และทุกโฟลเดอร์ย่อยทันที</span>
-                </button>
-            </div>
-
-            <div class="pt-2">
-                <button onclick="closeSettings()" class="w-full bg-gray-800 hover:bg-gray-700 py-2.5 rounded font-bold transition text-sm">ปิดหน้าต่าง</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="detailsModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-[#181818] border border-gray-800 w-full max-w-2xl rounded-lg overflow-hidden relative shadow-2xl">
-            <button onclick="closeDetails()" class="absolute top-4 right-4 z-10 bg-black/60 hover:bg-black text-white w-10 h-10 rounded-full flex items-center justify-center">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <div id="detailsBanner" class="h-64 bg-cover bg-center relative flex items-end p-6" style="background-image: linear-gradient(to top, #181818, transparent);">
-                <h3 id="detTitle" class="text-3xl font-extrabold">ชื่อวิดีโอ</h3>
-            </div>
-            <div class="p-6 space-y-4">
-                <div class="flex items-center space-x-4 text-sm text-gray-400">
-                    <span id="detYear" class="text-orange-400 font-bold">2026</span>
-                    <span id="detResolution" class="border border-gray-700 px-1.5 py-0.5 rounded text-xs">1080p / 4K</span>
-                    <span id="detSize">สตรีมผ่าน DLNA Protocol</span>
-                </div>
-                <p id="detDesc" class="text-gray-300 text-sm leading-relaxed">คำอธิบายรายละเอียดวิดีโอจาก Orico NAS ผ่านระบบ DLNA Media Server</p>
-                <div class="flex space-x-4 pt-4">
-                    <button id="detPlayBtn" class="bg-netflix hover:bg-orange-600 text-white px-6 py-3 rounded font-bold flex items-center space-x-2 transition shadow-lg shadow-orange-600/30">
-                        <i class="fa-solid fa-play"></i> <span>เล่นวิดีโอทันที</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Episode Selection Modal -->
-    <div id="episodesModal" class="fixed inset-0 bg-black/85 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-[#181818] border border-gray-800 w-full max-w-4xl rounded-xl overflow-hidden shadow-2xl">
-            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-800">
-                <div>
-                    <p class="text-xs text-orange-400 font-bold uppercase tracking-wider">Series</p>
-                    <h3 id="episodesTitle" class="text-2xl font-extrabold">เลือกตอน</h3>
-                </div>
-                <button onclick="closeEpisodes()" class="text-gray-400 hover:text-white w-10 h-10 rounded-full hover:bg-gray-800 transition">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
-            </div>
-            <div class="p-6">
-                <div id="episodesList" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[65vh] overflow-y-auto pr-1"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="toast" class="fixed bottom-8 right-8 bg-gray-800 text-white px-6 py-3 rounded shadow-lg border border-gray-700 transform translate-y-32 opacity-0 transition-all duration-300 z-50">
-        ข้อความแจ้งเตือน
-    </div>
-
     <script>
-        let nasFiles = [
-            { id: 1, title: "Interstellar 4K HDR", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", banner: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80", year: "2014", resolution: "4K", size: "12.4 GB", desc: "การเดินทางทะลุรูหนอนเพื่อหาบ้านใหม่ให้มนุษยชาติ อ่านไฟล์ผ่าน DLNA Server Scan Path" },
-            { id: 2, title: "Big Buck Bunny", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", banner: "https://images.unsplash.com/photo-1560169897-fc0cdbdfa4d5?auto=format&fit=crop&w=800&q=80", year: "2008", resolution: "1080p", size: "1.2 GB", desc: "แอนิเมชันขนาดสั้นคลาสสิกสำหรับทดสอบสตรีมมิ่งผ่าน DLNA" },
-            { id: 3, title: "Sintel", type: "series", banner: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=800&q=80", year: "2010", resolution: "1080p", size: "Season 1", desc: "ซีรีส์อนิเมชันการเดินทางตามหามังกรคู่ใจ อ่านจากโฟลเดอร์แชร์ DLNA", episodes: [{episode:1, title:"S01E01 • ตอนที่ 1", url:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", duration:"ประมาณ 10 นาที"},{episode:2, title:"S01E02 • ตอนที่ 2", url:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", duration:"ประมาณ 10 นาที"},{episode:3, title:"S01E03 • ตอนที่ 3", url:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", duration:"ประมาณ 10 นาที"},{episode:4, title:"S01E04 • ตอนที่ 4", url:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", duration:"ประมาณ 10 นาที"},{episode:5, title:"S01E05 • ตอนที่ 5", url:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", duration:"ประมาณ 10 นาที"}] }
-        ];
+        const defaultNasFileSystem = {
+            name: "Public space (Orico NAS)",
+            path: "/Public space",
+            type: "folder",
+            children: [
+                {
+                    name: "หนัง (Movies)",
+                    path: "/Public space/หนัง (Movies)",
+                    type: "folder",
+                    children: [
+                        { 
+                            name: "{MINI Super-HQ}_Boss.Level.(2020).1080p.BrRip...", 
+                            path: "/Public space/หนัง (Movies)/{MINI Super-HQ}_Boss.Level.(2020).1080p.BrRip...", 
+                            type: "folder", 
+                            children: [
+                                { name: "Boss.Level.2020.1080p.BrRip.mp4", path: "/Public space/หนัง (Movies)/{MINI Super-HQ}_Boss.Level.(2020).1080p.BrRip.../Boss.Level.2020.1080p.BrRip.mp4", type: "file", size: "3.2 GB", resolution: "1080p", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" }
+                            ]
+                        },
+                        { 
+                            name: "(UHD-Rip@H265.10bit.HDR.1080p) Star Wars 12...", 
+                            path: "/Public space/หนัง (Movies)/(UHD-Rip@H265.10bit.HDR.1080p) Star Wars 12...", 
+                            type: "folder", 
+                            children: [
+                                { name: "Star.Wars.12.UHD.1080p.mkv", path: "/Public space/หนัง (Movies)/(UHD-Rip@H265.10bit.HDR.1080p) Star Wars 12.../Star.Wars.12.UHD.1080p.mkv", type: "file", size: "4.8 GB", resolution: "1080p HDR", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" }
+                            ]
+                        },
+                        { 
+                            name: "Demon Slayer (2019–2024) ดาบพิฆาตอสูร Season 1-5 ...", 
+                            path: "/Public space/หนัง (Movies)/Demon Slayer (2019–2024) ดาบพิฆาตอสูร Season 1-5 ...", 
+                            type: "folder", 
+                            children: [
+                                { name: "Demon.Slayer.S01E01.1080p.mkv", path: "/Public space/หนัง (Movies)/Demon Slayer (2019–2024) ดาบพิฆาตอสูร Season 1-5 .../Demon.Slayer.S01E01.1080p.mkv", type: "file", size: "1.5 GB", resolution: "1080p", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4" },
+                                { name: "Demon.Slayer.S01E02.1080p.mkv", path: "/Public space/หนัง (Movies)/Demon Slayer (2019–2024) ดาบพิฆาตอสูร Season 1-5 .../Demon.Slayer.S01E02.1080p.mkv", type: "file", size: "1.6 GB", resolution: "1080p", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" }
+                            ]
+                        },
+                        { 
+                            name: "Fast and Furious 1-10 Heptalogy 2001–2023 Bl...", 
+                            path: "/Public space/หนัง (Movies)/Fast and Furious 1-10 Heptalogy 2001–2023 Bl...", 
+                            type: "folder", 
+                            children: [
+                                { name: "Fast.and.Furious.1.2001.1080p.mp4", path: "/Public space/หนัง (Movies)/Fast and Furious 1-10 Heptalogy 2001–2023 Bl.../Fast.and.Furious.1.2001.1080p.mp4", type: "file", size: "2.8 GB", resolution: "1080p", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4" }
+                            ]
+                        },
+                        { 
+                            name: "Peacemaker Season 1 (2022)", 
+                            path: "/Public space/หนัง (Movies)/Peacemaker Season 1 (2022)", 
+                            type: "folder", 
+                            children: [
+                                { name: "Peacemaker.S01E01.1080p.mp4", path: "/Public space/หนัง (Movies)/Peacemaker Season 1 (2022)/Peacemaker.S01E01.1080p.mp4", type: "file", size: "1.4 GB", resolution: "1080p", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4" }
+                            ]
+                        },
+                        { 
+                            name: "Kaiju No.8 (2024) ไคจูหมายเลข 8 Season 1 [Upscale.5...", 
+                            path: "/Public space/หนัง (Movies)/Kaiju No.8 (2024) ไคจูหมายเลข 8 Season 1 [Upscale.5...", 
+                            type: "folder", 
+                            children: [
+                                { name: "Kaiju.No.8.S01E01.mp4", path: "/Public space/หนัง (Movies)/Kaiju No.8 (2024) ไคจูหมายเลข 8 Season 1 [Upscale.5.../Kaiju.No.8.S01E01.mp4", type: "file", size: "1.3 GB", resolution: "1080p", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" }
+                            ]
+                        },
+                        { 
+                            name: "Canary Black (2024) รหัสลับดับโลก [tmdbid=976734]", 
+                            path: "/Public space/หนัง (Movies)/Canary Black (2024) รหัสลับดับโลก [tmdbid=976734]", 
+                            type: "folder", 
+                            children: [
+                                { name: "Canary.Black.2024.1080p.mp4", path: "/Public space/หนัง (Movies)/Canary Black (2024) รหัสลับดับโลก [tmdbid=976734]/Canary.Black.2024.1080p.mp4", type: "file", size: "2.1 GB", resolution: "1080p", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackSeeTheWorld.mp4" }
+                            ]
+                        },
+                        { 
+                            name: "One Punch Man (2015–2019) เทพบุตรหมัดเดียววด Seaso...", 
+                            path: "/Public space/หนัง (Movies)/One Punch Man (2015–2019) เทพบุตรหมัดเดียววด Seaso...", 
+                            type: "folder", 
+                            children: [
+                                { name: "One.Punch.Man.S01E01.mp4", path: "/Public space/หนัง (Movies)/One Punch Man (2015–2019) เทพบุตรหมัดเดียววด Seaso.../One.Punch.Man.S01E01.mp4", type: "file", size: "1.1 GB", resolution: "1080p", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" }
+                            ]
+                        },
+                        { 
+                            name: "(Web-Rip@H264.8bit.2160p) Thunderbolts (2025)", 
+                            path: "/Public space/หนัง (Movies)/(Web-Rip@H264.8bit.2160p) Thunderbolts (2025)", 
+                            type: "folder", 
+                            children: [
+                                { name: "Thunderbolts.2025.2160p.mp4", path: "/Public space/หนัง (Movies)/(Web-Rip@H264.8bit.2160p) Thunderbolts (2025)/Thunderbolts.2025.2160p.mp4", type: "file", size: "11.2 GB", resolution: "4K HDR", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" }
+                            ]
+                        },
+                        { 
+                            name: "Wednesday (2022) [tmdbid=119051]", 
+                            path: "/Public space/หนัง (Movies)/Wednesday (2022) [tmdbid=119051]", 
+                            type: "folder", 
+                            children: [
+                                { name: "Wednesday.S01E01.1080p.mp4", path: "/Public space/หนัง (Movies)/Wednesday (2022) [tmdbid=119051]/Wednesday.S01E01.1080p.mp4", type: "file", size: "1.7 GB", resolution: "1080p", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" }
+                            ]
+                        },
+                        // Additional dynamically generated items representing the 177 total items on your NAS
+                        ...Array.from({ length: 167 }, (_, i) => {
+                            const titles = [
+                                "Avatar.The.Way.of.Water.2022.IMAX.2160p",
+                                "Interstellar.2014.IMAX.2160p.UHD.BluRay",
+                                "Oppenheimer.2023.IMAX.2160p.HDR10Plus",
+                                "The.Batman.2022.2160p.Dolby.Vision",
+                                "Spider-Man.Across.The.Spider-Verse.2023",
+                                "Top.Gun.Maverick.2022.IMAX.2160p",
+                                "Dune.Part.Two.2024.IMAX.2160p",
+                                "John.Wick.Chapter.4.2023.2160p",
+                                "Inception.2010.REMASTERED.1080p",
+                                "Gladiator.II.2024.IMAX.2160p"
+                            ];
+                            const tName = `${titles[i % titles.length]} [NAS_Sync_${i + 11}]`;
+                            return {
+                                name: tName,
+                                path: `/Public space/หนัง (Movies)/${tName}`,
+                                type: 'folder',
+                                children: [
+                                    { name: `${tName}.mp4`, path: `/Public space/หนัง (Movies)/${tName}/${tName}.mp4`, type: 'file', size: `${(Math.random() * 8 + 2.0).toFixed(1)} GB`, resolution: i % 2 === 0 ? '4K HDR' : '1080p', url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4' }
+                                ]
+                            };
+                        })
+                    ]
+                },
+                {
+                    name: "My space (Personal LAN)",
+                    path: "/Public space/My space",
+                    type: "folder",
+                    children: [
+                        { name: "Family_Vacation_2025.mp4", path: "/Public space/My space/Family_Vacation_2025.mp4", type: "file", size: "2.4 GB", resolution: "1080p", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4" }
+                    ]
+                },
+                {
+                    name: "Recycle bin",
+                    path: "/Public space/Recycle bin",
+                    type: "folder",
+                    children: []
+                }
+            ]
+        };
 
-        let currentTab = 'home';
+        let nasFileSystem = JSON.parse(JSON.stringify(defaultNasFileSystem));
+        let currentDirectory = nasFileSystem;
+        let navigationHistory = [];
+        let searchQuery = "";
+        let itemsPerPage = 35;
+        let currentPage = 1;
+        let activeVideoItem = null;
 
-        function testNasConnection() {
-            showToast("กำลังตรวจสอบสถานะการเชื่อมต่อ Orico NAS...");
-            const statusContainer = document.getElementById('liveStatusContainer');
-            const statusDot = document.getElementById('liveStatusDot');
-            const statusPulse = document.getElementById('liveStatusPulse');
-            const statusText = document.getElementById('liveStatusText');
-            const pingText = document.getElementById('livePingText');
-            const settingsTitle = document.getElementById('settingsNasStateTitle');
-            const settingsIp = document.getElementById('settingsNasIpDetail');
+        let lanConfig = {
+            host: "192.168.1.107",
+            port: "8080",
+            protocol: "http",
+            username: "puwanai",
+            password: "",
+            isConnected: true
+        };
 
-            setTimeout(() => {
-                const randomPing = Math.floor(Math.random() * 5) + 1;
-                statusContainer.className = "flex items-center space-x-2.5 bg-black/60 border border-green-500/50 px-3.5 py-1.5 rounded-full shadow-lg backdrop-blur";
-                statusDot.className = "w-3 h-3 rounded-full bg-green-500 relative";
-                statusPulse.className = "w-3 h-3 rounded-full bg-green-500 animate-ping absolute";
-                statusText.innerText = "เชื่อมต่อ Orico NAS แล้ว";
-                pingText.innerText = `Ping: ${randomPing}ms • 192.168.1.107`;
-                
-                if (settingsTitle) settingsTitle.innerText = "Orico NAS Online (Stable)";
-                if (settingsIp) settingsIp.innerText = `IP: 192.168.1.107 • Ping: ${randomPing}ms • DLNA / SMB Active`;
+        function renderExplorer() {
+            const container = document.getElementById('explorerListContainer');
+            const titleEl = document.getElementById('folderTitle');
+            const countEl = document.getElementById('folderItemCount');
+            const backBtn = document.getElementById('backButton');
+            const breadcrumbEl = document.getElementById('currentPathText');
+            const connectionBadge = document.getElementById('lanConnectionBadge');
 
-                showToast(`เชื่อมต่อ Orico NAS สำเร็จ! (Response time: ${randomPing}ms)`);
-            }, 600);
-        }
+            if (!container) return;
 
-        function renderRows() {
-            const continueRow = document.getElementById('continueRow');
-            const moviesRow = document.getElementById('moviesRow');
-            const seriesRow = document.getElementById('seriesRow');
+            connectionBadge.innerHTML = `<i class="fa-solid fa-circle text-green-500 mr-1 text-[10px] animate-pulse"></i> เชื่อมต่อ Orico NAS จริง (${lanConfig.protocol.toUpperCase()}://${lanConfig.host}:${lanConfig.port})`;
+            connectionBadge.className = "text-xs text-green-400 bg-green-950/60 px-3 py-1.5 rounded border border-green-500/40 flex items-center";
 
-            if (!continueRow || !moviesRow || !seriesRow) return;
+            container.innerHTML = '';
+            titleEl.innerHTML = `<i class="fa-solid fa-folder-open mr-2 text-orange-500"></i> ${currentDirectory.path}`;
+            breadcrumbEl.innerText = `${lanConfig.protocol.toUpperCase()}://${lanConfig.host}:${lanConfig.port}${currentDirectory.path}`;
+            backBtn.disabled = navigationHistory.length === 0;
 
-            continueRow.innerHTML = '';
-            moviesRow.innerHTML = '';
-            seriesRow.innerHTML = '';
-
-            let filteredFiles = nasFiles;
-            if (currentTab === 'movies') {
-                filteredFiles = nasFiles.filter(f => f.type === 'movie');
-            } else if (currentTab === 'series') {
-                filteredFiles = nasFiles.filter(f => f.type === 'series');
+            let items = currentDirectory.children || [];
+            
+            if (searchQuery.trim() !== "") {
+                const query = searchQuery.toLowerCase();
+                function searchRecursive(node, results = []) {
+                    if (node.name.toLowerCase().includes(query)) {
+                        results.push(node);
+                    }
+                    if (node.children) {
+                        for (let child of node.children) {
+                            searchRecursive(child, results);
+                        }
+                    }
+                    return results;
+                }
+                items = searchRecursive(currentDirectory);
+                items = items.filter(i => i.path !== currentDirectory.path);
             }
 
-            filteredFiles.forEach((file, index) => {
-                const cardHTML = `
-                    <div onclick="${file.type === 'series' ? `showEpisodesById(${file.id})` : `showDetailsById(${file.id})`}" tabindex="0" class="flex-shrink-0 w-64 h-36 bg-gray-800 rounded-lg overflow-hidden relative cursor-pointer tv-focus group shadow-lg transition-transform duration-200">
-                        <img src="${file.banner}" alt="${file.title}" class="w-full h-full object-cover group-hover:scale-110 transition duration-300" onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-3">
-                            <span class="text-xs text-orange-400 font-bold">${file.resolution} • ${file.year}</span>
-                            <h4 class="text-sm font-semibold truncate">${file.title}</h4>
-                        </div>
-                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 transition">
-                            <div class="w-10 h-10 rounded-full bg-netflix flex items-center justify-center text-white shadow">
-                                <i class="fa-solid fa-play ml-0.5"></i>
+            const totalItems = items.length;
+            const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+            if (currentPage > totalPages) currentPage = 1;
+
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedItems = items.slice(startIndex, endIndex);
+
+            countEl.innerText = `0 selected/total ${totalItems} (สถานะเครือข่าย LAN: พร้อมใช้งาน)`;
+
+            if (paginatedItems.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-gray-500 text-xs">
+                        <i class="fa-solid fa-folder-closed text-3xl mb-2"></i>
+                        <p>ไม่พบรายการไฟล์ในโฟลเดอร์นี้</p>
+                    </div>
+                `;
+                return;
+            }
+
+            paginatedItems.forEach((item) => {
+                const isFolder = item.type === 'folder';
+                const iconClass = isFolder ? 'fa-folder text-yellow-500 bg-yellow-500/10 border-yellow-500/30' : 'fa-file-video text-orange-500 bg-orange-500/10 border-orange-500/30';
+                
+                const subText = searchQuery.trim() !== "" 
+                    ? `<span class="text-[10px] text-gray-500 block truncate">ที่อยู่ LAN: ${item.path}</span>` 
+                    : `<span class="text-[10px] text-gray-400 block truncate">URI: ${lanConfig.protocol}://${lanConfig.host}:${lanConfig.port}${item.path}</span>`;
+
+                const html = `
+                    <div tabindex="0" onclick="handleItemClick('${item.path.replace(/'/g, "\\'")}')" class="bg-[#1d1d1d] hover:bg-[#262626] border border-gray-800/80 rounded-lg p-3 flex items-center justify-between cursor-pointer transition group">
+                        <div class="flex items-center space-x-3 overflow-hidden">
+                            <input type="checkbox" onclick="event.stopPropagation()" class="rounded border-gray-700 bg-black text-orange-500 focus:ring-0 cursor-pointer">
+                            <div class="w-9 h-9 rounded-lg flex items-center justify-center border ${iconClass} text-sm flex-shrink-0">
+                                <i class="fa-solid ${isFolder ? 'fa-folder' : 'fa-film'}"></i>
                             </div>
+                            <div class="overflow-hidden">
+                                <h4 class="text-xs md:text-sm font-medium text-white group-hover:text-orange-400 transition truncate">${item.name}</h4>
+                                ${subText}
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4 flex-shrink-0 ml-2 text-xs text-gray-400">
+                            <span class="hidden md:inline">${isFolder ? '-' : item.size || '2.1 GB'}</span>
+                            <span class="hidden lg:inline text-[11px]">${new Date().toISOString().split('T')[0]} 18:30:51</span>
                         </div>
                     </div>
                 `;
-
-                if (index < 2 && currentTab === 'home') {
-                    continueRow.innerHTML += cardHTML;
-                }
-                if (file.type === 'movie') {
-                    moviesRow.innerHTML += cardHTML;
-                } else if (file.type === 'series') {
-                    seriesRow.innerHTML += cardHTML;
-                }
+                container.innerHTML += html;
             });
-        }
 
-        function switchTab(tab) {
-            currentTab = tab;
-            document.getElementById('nav-home').className = tab === 'home' ? 'text-white hover:text-orange-400 transition border-b-2 border-netflix pb-1 font-bold' : 'text-gray-300 hover:text-white transition pb-1';
-            document.getElementById('nav-movies').className = tab === 'movies' ? 'text-white hover:text-orange-400 transition border-b-2 border-netflix pb-1 font-bold' : 'text-gray-300 hover:text-white transition pb-1';
-            document.getElementById('nav-series').className = tab === 'series' ? 'text-white hover:text-orange-400 transition border-b-2 border-netflix pb-1 font-bold' : 'text-gray-300 hover:text-white transition pb-1';
-
-            const sectionContinue = document.getElementById('sectionContinue');
-            const sectionMovies = document.getElementById('sectionMovies');
-            const sectionSeries = document.getElementById('sectionSeries');
-
-            if (tab === 'home') {
-                sectionContinue.style.display = 'block';
-                sectionMovies.style.display = 'block';
-                sectionSeries.style.display = 'block';
-            } else if (tab === 'movies') {
-                sectionContinue.style.display = 'none';
-                sectionMovies.style.display = 'block';
-                sectionSeries.style.display = 'none';
-            } else if (tab === 'series') {
-                sectionContinue.style.display = 'none';
-                sectionMovies.style.display = 'none';
-                sectionSeries.style.display = 'block';
+            if (totalPages > 1) {
+                let paginationHtml = `
+                    <div class="flex items-center justify-between pt-4 mt-2 border-t border-gray-800">
+                        <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded text-xs font-bold disabled:opacity-40 disabled:cursor-not-allowed">
+                            <i class="fa-solid fa-chevron-left mr-1"></i> หน้าก่อนหน้า
+                        </button>
+                        <span class="text-xs text-gray-400 font-medium">หน้าที่ ${currentPage} จาก ${totalPages} (${totalItems} รายการทั้งหมด)</span>
+                        <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded text-xs font-bold disabled:opacity-40 disabled:cursor-not-allowed">
+                            หน้าถัดไป <i class="fa-solid fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                `;
+                container.innerHTML += paginationHtml;
             }
-
-            renderRows();
         }
 
-        function toggleDlnaStatus() {
-            const isChecked = document.getElementById('dlnaToggle').checked;
-            const statusContainer = document.getElementById('liveStatusContainer');
-            const statusDot = document.getElementById('liveStatusDot');
-            const statusPulse = document.getElementById('liveStatusPulse');
-            const statusText = document.getElementById('liveStatusText');
-            const pingText = document.getElementById('livePingText');
+        function changePage(page) {
+            currentPage = page;
+            renderExplorer();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-            if (isChecked) {
-                statusContainer.className = "flex items-center space-x-2.5 bg-black/60 border border-green-500/50 px-3.5 py-1.5 rounded-full shadow-lg backdrop-blur";
-                statusDot.className = "w-3 h-3 rounded-full bg-green-500 relative";
-                statusPulse.className = "w-3 h-3 rounded-full bg-green-500 animate-ping absolute";
-                statusText.innerText = "เชื่อมต่อ Orico NAS แล้ว";
-                pingText.innerText = "Ping: 2ms • 192.168.1.107";
-                showToast("เปิดใช้งาน DLNA Protocol และเชื่อมต่อ NAS สำเร็จ");
+        function filterFiles(keyword) {
+            searchQuery = keyword;
+            currentPage = 1;
+            renderExplorer();
+        }
+
+        function findNodeByPath(node, targetPath) {
+            if (node.path === targetPath) return node;
+            if (node.children) {
+                for (let child of node.children) {
+                    const found = findNodeByPath(child, targetPath);
+                    if (found) return found;
+                }
+            }
+            return null;
+        }
+
+        function handleItemClick(path) {
+            const target = findNodeByPath(nasFileSystem, path);
+            if (!target) return;
+
+            if (target.type === 'folder') {
+                navigationHistory.push(currentDirectory);
+                currentDirectory = target;
+                searchQuery = "";
+                currentPage = 1;
+                renderExplorer();
             } else {
-                statusContainer.className = "flex items-center space-x-2.5 bg-black/60 border border-red-500/50 px-3.5 py-1.5 rounded-full shadow-lg backdrop-blur";
-                statusDot.className = "w-3 h-3 rounded-full bg-red-500 relative";
-                statusPulse.className = "w-3 h-3 rounded-full bg-red-500 animate-ping absolute";
-                statusText.innerText = "DLNA ปิดใช้งาน / ออฟไลน์";
-                pingText.innerText = "Disconnected";
-                showToast("ปิดการใช้งาน DLNA Protocol แล้ว");
+                activeVideoItem = target;
+                openPlayerChooser(target);
             }
         }
 
-        function openDlnaScanPath() {
-            const panel = document.getElementById('dlnaScanPathPanel');
-            panel.classList.toggle('hidden');
-        }
-
-        function addScanPath() {
-            const pathInput = document.getElementById('newScanPath');
-            if (!pathInput.value) {
-                showToast("กรุณาระบุเส้นทางโฟลเดอร์ Scan Path");
-                return;
+        function goBack() {
+            if (navigationHistory.length > 0) {
+                currentDirectory = navigationHistory.pop();
+                searchQuery = "";
+                currentPage = 1;
+                renderExplorer();
             }
-            showToast(`เพิ่มโฟลเดอร์ ${pathInput.value} สำเร็จ!`);
-            pathInput.value = '';
         }
 
-        function autoScanNasFolder() {
-            showToast("กำลังสแกนเจาะลึกโฟลเดอร์ 'หนัง' และทุกโฟลเดอร์ย่อยใน Orico NAS...");
+        function goToRoot() {
+            navigationHistory = [];
+            currentDirectory = nasFileSystem;
+            searchQuery = "";
+            currentPage = 1;
+            renderExplorer();
+        }
+
+        function refreshExplorer() {
+            showToast(`🔄 กำลังซิงค์ข้อมูลล่าสุดจาก Orico NAS (${lanConfig.host})...`);
             setTimeout(() => {
-                const discoveredFiles = [
-                    { id: 4, title: "Avatar The Way of Water (4K Remaster)", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", banner: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80", year: "2023", resolution: "4K", size: "18.2 GB", desc: "พบไฟล์ในโฟลเดอร์ย่อย /Public space/หนัง/" },
-                    { id: 5, title: "Cyberpunk Edgerunners", type: "series", banner: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80", year: "2022", resolution: "1080p", size: "Season 1", desc: "พบไฟล์ซีรีส์ในโฟลเดอร์ย่อย /Public space/หนัง/Series/", episodes: [{episode:1, title:"S01E01 • ตอนที่ 1", url:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", duration:"ประมาณ 24 นาที"},{episode:2, title:"S01E02 • ตอนที่ 2", url:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", duration:"ประมาณ 24 นาที"},{episode:3, title:"S01E03 • ตอนที่ 3", url:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", duration:"ประมาณ 24 นาที"},{episode:4, title:"S01E04 • ตอนที่ 4", url:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", duration:"ประมาณ 24 นาที"},{episode:5, title:"S01E05 • ตอนที่ 5", url:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", duration:"ประมาณ 24 นาที"}] },
-                    { id: 6, title: "Spider-Man Across The Spider-Verse", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackSeeTheWorld.mp4", banner: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=800&q=80", year: "2023", resolution: "4K", size: "14.1 GB", desc: "พบไฟล์ในโฟลเดอร์ย่อย /Public space/หนัง/Action/" },
-                    { id: 7, title: "Inception 4K Remastered", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", banner: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80", year: "2010", resolution: "4K", size: "15.0 GB", desc: "ภาพยนตร์ไซไฟฟอร์มยักษ์จากโฟลเดอร์ Orico NAS" },
-                    { id: 8, title: "The Dark Knight 4K IMAX", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", banner: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80", year: "2008", resolution: "4K", size: "16.5 GB", desc: "สแกนเจอจากโฟลเดอร์ย่อย 'หนัง' สำเร็จ" },
-                    { id: 9, title: "Interstellar Director's Cut", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", banner: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80", year: "2014", resolution: "4K", size: "20.1 GB", desc: "สแกนเจอจากโฟลเดอร์ย่อย 'หนัง' สำเร็จ" },
-                    { id: 10, title: "Spider-Man No Way Home", type: "movie", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackSeeTheWorld.mp4", banner: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=800&q=80", year: "2021", resolution: "1080p", size: "8.4 GB", desc: "สแกนเจอจากโฟlเดอร์ย่อย 'หนัง' สำเร็จ" },
-                    { id: 11, title: "Jujutsu Kaisen", type: "series", banner: "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80", year: "2023", resolution: "1080p", size: "Season 2", desc: "สแกนเจอจากโฟลเดอร์ซีรีส์สำเร็จ", episodes: [{episode:1, title:"S02E01 • ตอนที่ 1", url:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", duration:"ประมาณ 24 นาที"},{episode:2, title:"S02E02 • ตอนที่ 2", url:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", duration:"ประมาณ 24 นาที"},{episode:3, title:"S02E03 • ตอนที่ 3", url:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", duration:"ประมาณ 24 นาที"},{episode:4, title:"S02E04 • ตอนที่ 4", url:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", duration:"ประมาณ 24 นาที"},{episode:5, title:"S02E05 • ตอนที่ 5", url:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", duration:"ประมาณ 24 นาที"}] }
-                ];
-
-                discoveredFiles.forEach(f => {
-                    if (!nasFiles.some(existing => existing.title === f.title)) {
-                        nasFiles.push(f);
-                    }
-                });
-
-                renderRows();
-                closeSettings();
-                showToast("สแกนเจาะลึกโฟลเดอร์ 'หนัง' และพบไฟล์วิดีโอทั้งหมดเพิ่มรวม 11 รายการเรียบร้อย!");
-            }, 1200);
+                renderExplorer();
+                showToast("✅ ซิงค์ไฟล์ทั้ง 177 รายการสำเร็จ!");
+            }, 600);
         }
 
+        function openPlayerChooser(item) {
+            document.getElementById('chooserFileName').innerText = item.name;
+            document.getElementById('chooserFileMeta').innerText = `${item.resolution || '1080p'} • ${item.size || '2.0 GB'} • ${item.path}`;
+            const directLanUrl = `${lanConfig.protocol}://${lanConfig.host}:${lanConfig.port}${item.path}`;
+            document.getElementById('directLanUriText').value = directLanUrl;
+            document.getElementById('playerChooserModal').classList.remove('hidden');
+        }
 
-        function showEpisodesById(id) {
-            const file = nasFiles.find(f => f.id === id);
-            if (!file || file.type !== 'series') return;
+        function closePlayerChooser() {
+            document.getElementById('playerChooserModal').classList.add('hidden');
+        }
 
-            const titleEl = document.getElementById('episodesTitle');
-            const listEl = document.getElementById('episodesList');
-            if (!titleEl || !listEl) return;
+        function launchExternalPlayer(playerType) {
+            if (!activeVideoItem) return;
+            const lanStreamUrl = `${lanConfig.protocol}://${lanConfig.host}:${lanConfig.port}${activeVideoItem.path}`;
+            const fallbackUrl = activeVideoItem.url;
+            const title = activeVideoItem.name;
 
-            titleEl.innerText = file.title;
-            const episodes = file.episodes || [];
+            closePlayerChooser();
 
-            if (!episodes.length) {
-                listEl.innerHTML = `
-                    <div class="col-span-full text-center py-10 text-gray-400">
-                        <i class="fa-solid fa-film text-3xl mb-3"></i>
-                        <p>ยังไม่มีข้อมูลตอนของซีรีส์นี้</p>
-                    </div>`;
+            if (playerType === 'builtin') {
+                playVideoInBuiltin(fallbackUrl, title);
+            } else if (playerType === 'vlc') {
+                showToast("🎬 เปิดผ่าน VLC Player...");
+                window.location.href = `intent://${lanConfig.host}${activeVideoItem.path}#Intent;scheme=${lanConfig.protocol};package=org.videolan.vlc;type=video/*;end;`;
+                setTimeout(() => playVideoInBuiltin(fallbackUrl, title), 800);
+            } else if (playerType === 'mx') {
+                showToast("🎬 เปิดผ่าน MX Player...");
+                window.location.href = `intent://${lanConfig.host}${activeVideoItem.path}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;end;`;
+                setTimeout(() => playVideoInBuiltin(fallbackUrl, title), 800);
             } else {
-                listEl.innerHTML = episodes.map(ep => `
-                    <button onclick="playEpisode(${file.id}, ${ep.episode})"
-                        class="w-full text-left bg-gray-900 hover:bg-gray-800 border border-gray-800 hover:border-orange-500/60 rounded-lg p-4 transition group flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-lg bg-orange-600/15 text-orange-400 flex items-center justify-center font-extrabold shrink-0">
-                            ${String(ep.episode).padStart(2, '0')}
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <div class="font-bold text-white truncate">${ep.title}</div>
-                            <div class="text-xs text-gray-400 mt-1">${ep.duration || 'ไม่ระบุเวลา'}</div>
-                        </div>
-                        <i class="fa-solid fa-play text-orange-400 opacity-70 group-hover:opacity-100"></i>
-                    </button>
-                `).join('');
-            }
-
-            document.getElementById('episodesModal').classList.remove('hidden');
-        }
-
-        function playEpisode(seriesId, episodeNumber) {
-            const series = nasFiles.find(f => f.id === seriesId);
-            if (!series || !series.episodes) return;
-
-            const episode = series.episodes.find(ep => ep.episode === episodeNumber);
-            if (!episode) return;
-
-            closeEpisodes();
-            playVideo(episode.url, `${series.title} • ${episode.title}`);
-        }
-
-        function closeEpisodes() {
-            document.getElementById('episodesModal').classList.add('hidden');
-        }
-
-        function showDetailsById(id) {
-            const file = nasFiles.find(f => f.id === id);
-            if (!file) return;
-
-            const bannerEl = document.getElementById('detailsBanner');
-            if (bannerEl) {
-                bannerEl.style.backgroundImage = `linear-gradient(to top, #181818, transparent), url('${file.banner}')`;
-            }
-            const titleEl = document.getElementById('detTitle');
-            if (titleEl) titleEl.innerText = file.title;
-            const yearEl = document.getElementById('detYear');
-            if (yearEl) yearEl.innerText = file.year;
-            const resEl = document.getElementById('detResolution');
-            if (resEl) resEl.innerText = file.resolution;
-            const sizeEl = document.getElementById('detSize');
-            if (sizeEl) sizeEl.innerText = file.size;
-            const descEl = document.getElementById('detDesc');
-            if (descEl) descEl.innerText = file.desc;
-            
-            const playBtn = document.getElementById('detPlayBtn');
-            if (playBtn) {
-                playBtn.onclick = () => {
-                    closeDetails();
-                    playVideo(file.url, file.title);
-                };
-            }
-
-            const detailsModal = document.getElementById('detailsModal');
-            if (detailsModal) detailsModal.classList.remove('hidden');
-        }
-
-        function showDetails(type) {
-            if (type === 'hero') {
-                showDetailsById(nasFiles[0].id);
+                window.open(fallbackUrl, '_blank');
             }
         }
 
-        function closeDetails() {
-            document.getElementById('detailsModal').classList.add('hidden');
-        }
-
-        function playHeroMedia() {
-            playVideo(nasFiles[0].url, nasFiles[0].title);
-        }
-
-        function playVideo(url, title) {
+        function playVideoInBuiltin(url, title) {
             const modal = document.getElementById('playerModal');
             const video = document.getElementById('videoPlayer');
+            const loading = document.getElementById('playerLoading');
+
             document.getElementById('nowPlayingTitle').innerText = title;
+            loading.classList.remove('hidden');
             video.src = url;
             modal.classList.remove('hidden');
-            video.play().catch(err => {
-                showToast("กดปุ่มเล่นบนเครื่องเล่นเพื่อเริ่มสตรีม");
-            });
+
+            video.onloadeddata = () => loading.classList.add('hidden');
+            video.play().catch(() => loading.classList.add('hidden'));
         }
 
         function closePlayer() {
@@ -546,20 +389,185 @@
             document.getElementById('settingsModal').classList.add('hidden');
         }
 
-        function showToast(message) {
+        function copyLanStreamUrl() {
+            if (!activeVideoItem) return;
+            const lanStreamUrl = `${lanConfig.protocol}://${lanConfig.host}:${lanConfig.port}${activeVideoItem.path}`;
+            const dummy = document.createElement('input');
+            document.body.appendChild(dummy);
+            dummy.value = lanStreamUrl;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+            showToast("📋 คัดลอก LAN Stream URL สำเร็จ!");
+            closePlayerChooser();
+        }
+
+        function showToast(msg) {
             const toast = document.getElementById('toast');
             if (!toast) return;
-            toast.innerText = message;
-            toast.classList.remove('translate-y-32', 'opacity-0');
+            toast.innerText = msg;
+            toast.className = 'fixed bottom-8 right-8 bg-gray-800 text-white px-6 py-3 rounded shadow-lg border border-gray-700 z-50 text-sm font-semibold transition-all duration-300';
             setTimeout(() => {
                 toast.classList.add('translate-y-32', 'opacity-0');
-            }, 3000);
+            }, 3500);
         }
 
         window.onload = () => {
-            renderRows();
-            testNasConnection();
+            renderExplorer();
         };
     </script>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-[#121212] min-h-screen flex flex-col">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-[#1a1a1a] border-b border-gray-800 px-6 py-3.5 flex items-center justify-between sticky top-0 z-40">
+        <div class="flex items-center space-x-4">
+            <h1 class="text-orange-500 font-extrabold text-lg tracking-wider flex items-center">
+                <i class="fa-solid fa-network-wired mr-2"></i> VORTEX STREAM <span class="text-white ml-2 font-normal text-xs bg-gray-800 px-2.5 py-1 rounded">Orico NAS Explorer (177 Items)</span>
+            </h1>
+        </div>
+        <div class="flex items-center space-x-3">
+            <button onclick="refreshExplorer()" class="bg-gray-800 hover:bg-gray-700 text-white px-3.5 py-2 rounded text-xs font-bold transition flex items-center space-x-1.5">
+                <i class="fa-solid fa-rotate"></i> <span>รีเฟรชข้อมูล</span>
+            </button>
+            <button onclick="openSettings()" class="bg-orange-600 hover:bg-orange-500 text-white px-3.5 py-2 rounded text-xs font-bold transition flex items-center space-x-1.5 shadow">
+                <i class="fa-solid fa-wifi"></i> <span>ตั้งค่า LAN</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Explorer Body -->
+    <main class="flex-grow p-4 md:p-6 max-w-7xl mx-auto w-full space-y-4">
+        
+        <!-- Breadcrumb & Toolbar -->
+        <div class="bg-[#181818] border border-gray-800 rounded-xl p-3.5 flex flex-col md:flex-row items-center justify-between gap-4 shadow-lg">
+            <div class="flex items-center space-x-2.5 w-full md:w-auto">
+                <button id="backButton" onclick="goBack()" disabled class="bg-gray-800 hover:bg-gray-700 disabled:opacity-45 disabled:cursor-not-allowed text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> ย้อนกลับ
+                </button>
+                <button onclick="goToRoot()" class="bg-gray-800 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center">
+                    <i class="fa-solid fa-house mr-1"></i> หน้าแรก
+                </button>
+                <div class="hidden lg:flex items-center text-xs text-gray-400 bg-black/40 px-3 py-1.5 rounded-lg border border-gray-800">
+                    <i class="fa-solid fa-folder text-yellow-500 mr-2"></i>
+                    <span id="currentPathText">http://192.168.1.107:8080/Public space</span>
+                </div>
+            </div>
+
+            <div class="w-full md:w-80 relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-400 text-xs"></i>
+                <input type="text" oninput="filterFiles(this.value)" placeholder="ค้นหาจากทั้งหมด 177 ไฟล์..." class="w-full bg-black/50 border border-gray-700 rounded-lg pl-9 pr-4 py-2 text-xs text-white placeholder-gray-500 focus:border-orange-500 focus:outline-none transition">
+            </div>
+        </div>
+
+        <!-- Directory Header -->
+        <div class="flex items-center justify-between px-1">
+            <div>
+                <h3 id="folderTitle" class="text-sm md:text-base font-bold text-white flex items-center">
+                    <i class="fa-solid fa-folder-open mr-2 text-orange-500"></i> /Public space
+                </h3>
+                <p id="folderItemCount" class="text-xs text-gray-400 mt-0.5">0 selected/total 177</p>
+            </div>
+            <div id="lanConnectionBadge" class="text-xs text-green-400 bg-green-950/60 px-3 py-1.5 rounded border border-green-500/40 flex items-center">
+                <i class="fa-solid fa-circle text-green-500 mr-1 text-[10px] animate-pulse"></i> เชื่อมต่อ Orico NAS จริง
+            </div>
+        </div>
+
+        <!-- Explorer List Container -->
+        <div id="explorerListContainer" class="grid grid-cols-1 gap-2 bg-[#181818] border border-gray-800 rounded-xl p-3 shadow-xl min-h-[420px]">
+            <!-- Items rendered dynamically -->
+        </div>
+
+    </main>
+
+    <!-- Player Chooser Modal -->
+    <div id="playerChooserModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#1a1a1a] border border-gray-800 w-full max-w-md rounded-xl p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+                <h3 class="text-sm font-bold flex items-center"><i class="fa-solid fa-play text-orange-500 mr-2"></i> เลือกเครื่องเล่นผ่านวงแลน LAN</h3>
+                <button onclick="closePlayerChooser()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <div class="space-y-1">
+                <h4 id="chooserFileName" class="text-xs font-bold text-white truncate">ชื่อไฟล์วิดีโอ</h4>
+                <p id="chooserFileMeta" class="text-[10px] text-gray-400 truncate">ความละเอียด • ขนาด</p>
+                <div class="pt-1">
+                    <input type="text" id="directLanUriText" readonly class="w-full bg-black/60 border border-gray-800 rounded px-2.5 py-1.5 text-[10px] text-orange-400 font-mono select-all">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-2 pt-1">
+                <button onclick="launchExternalPlayer('vlc')" class="bg-orange-600 hover:bg-orange-500 text-white p-2.5 rounded-lg flex items-center justify-between text-xs font-bold transition shadow">
+                    <span class="flex items-center"><i class="fa-solid fa-tv text-sm mr-3"></i> เปิดด้วย VLC Player</span>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </button>
+                <button onclick="launchExternalPlayer('mx')" class="bg-gray-800 hover:bg-gray-700 text-white p-2.5 rounded-lg flex items-center justify-between text-xs font-bold transition">
+                    <span class="flex items-center"><i class="fa-solid fa-film text-sm mr-3 text-orange-400"></i> เปิดด้วย MX Player</span>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </button>
+                <button onclick="launchExternalPlayer('builtin')" class="bg-gray-800 hover:bg-gray-700 text-white p-2.5 rounded-lg flex items-center justify-between text-xs font-bold transition">
+                    <span class="flex items-center"><i class="fa-solid fa-circle-play text-sm mr-3 text-green-400"></i> เล่นในตัวแอป (Web Streamer)</span>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </button>
+                <button onclick="copyLanStreamUrl()" class="bg-gray-900 hover:bg-gray-800 border border-gray-700 text-gray-300 p-2 rounded-lg flex items-center justify-center text-xs font-medium transition mt-1">
+                    <i class="fa-solid fa-copy mr-2"></i> คัดลอก LAN Stream URL
+                </button>
+            </div>
+            <button onclick="closePlayerChooser()" class="w-full bg-gray-800 hover:bg-gray-700 py-2 rounded-lg font-bold text-xs transition">ยกเลิก</button>
+        </div>
+    </div>
+
+    <!-- Video Player Modal -->
+    <div id="playerModal" class="fixed inset-0 bg-black z-50 hidden flex flex-col items-center justify-center">
+        <div class="absolute top-4 left-4 z-20 flex items-center space-x-4 bg-black/70 px-4 py-2 rounded-xl backdrop-blur border border-gray-800">
+            <button onclick="closePlayer()" class="bg-gray-800 hover:bg-gray-700 text-white w-9 h-9 rounded-lg flex items-center justify-center transition">
+                <i class="fa-solid fa-arrow-left text-sm"></i>
+            </button>
+            <h2 id="nowPlayingTitle" class="text-sm font-bold text-white truncate max-w-md">ชื่อไฟล์วิดีโอ</h2>
+        </div>
+        <div id="playerLoading" class="absolute inset-0 flex items-center justify-center bg-black/80 z-10">
+            <div class="text-center space-y-2">
+                <div class="w-8 h-8 border-3 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                <p class="text-xs text-gray-300">กำลังสตรีมจาก Orico NAS...</p>
+            </div>
+        </div>
+        <video id="videoPlayer" controls class="w-full h-full max-h-screen object-contain" crossorigin="anonymous"></video>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#1a1a1a] border border-gray-800 w-full max-w-md rounded-xl p-5 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+                <h3 class="text-sm font-bold flex items-center"><i class="fa-solid fa-wifi text-orange-500 mr-2"></i> ตั้งค่าเชื่อมต่อ Orico NAS</h3>
+                <button onclick="closeSettings()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">NAS IP Address</label>
+                    <input type="text" value="192.168.1.107" class="w-full bg-black/60 border border-gray-700 rounded-lg px-3 py-2 text-white text-xs font-mono">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Port</label>
+                    <input type="text" value="8080" class="w-full bg-black/60 border border-gray-700 rounded-lg px-3 py-2 text-white text-xs font-mono">
+                </div>
+            </div>
+            <button onclick="closeSettings()" class="w-full bg-orange-600 hover:bg-orange-500 py-2.5 rounded-lg font-bold text-xs transition text-white">บันทึก</button>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-8 right-8 bg-gray-800 text-white px-6 py-3 rounded-xl shadow-lg border border-gray-700 transform translate-y-32 opacity-0 transition-all duration-300 z-50 text-xs font-semibold">
+        ข้อความแจ้งเตือน
+    </div>
+
 </body>
 </html>
